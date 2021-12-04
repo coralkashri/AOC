@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 23)
 
 file(GLOB_RECURSE SOURCE_FILES src/*)
 
-add_executable(AdventOfCode2021 ${SOURCE_FILES} src/2020/day_2.hpp)
+add_executable(AdventOfCode2021 ${SOURCE_FILES})
