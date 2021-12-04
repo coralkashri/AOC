@@ -1,0 +1,1 @@
+Run using the command: ```input.txt | executable```
