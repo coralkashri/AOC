@@ -1,3 +1,6 @@
+#ifndef AOC_2021_4
+#define AOC_2021_4
+
 #include <iostream>
 #include <bitset>
 #include <numeric>
@@ -5,10 +8,11 @@
 #include <fstream>
 #include <sstream>
 #include <list>
+#include "../input_source.hpp"
 
 std::stringstream get_line_stream() {
     std::string temp_line;
-    std::getline(std::cin, temp_line);
+    std::getline(INPUT_SOURCE, temp_line);
     return std::stringstream(temp_line);
 }
 
@@ -75,7 +79,7 @@ bool read_board(std::vector<int> &board) {
     return true;
 }
 
-int first_part() {
+int first_part_2021_4() {
     auto first_line = get_line_stream();
     std::vector<size_t> chosen_numbers;
     while (first_line >> std::back_inserter(chosen_numbers));
@@ -99,3 +103,4 @@ int first_part() {
 
     return EXIT_SUCCESS;
 }
+#endif

@@ -1,12 +1,16 @@
+#ifndef AOC_2021_2
+#define AOC_2021_2
+
 #include <iostream>
 #include <iterator>
 #include <bitset>
 #include <vector>
+#include "../input_source.hpp"
 
-int first_part() {
+int first_part_2021_2() {
     int horizontal = 0, depth = 0, *relevant_measurement;
     int sign;
-    std::for_each(std::istream_iterator<std::string>(std::cin), std::istream_iterator<std::string>(), [&] (std::string str) {
+    std::for_each(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), [&] (std::string str) {
         if (str == "forward") {
             relevant_measurement = &horizontal;
             sign = 1;
@@ -25,10 +29,10 @@ int first_part() {
     return EXIT_SUCCESS;
 }
 
-int second_part() {
+int second_part_2021_2() {
     int horizontal = 0, depth = 0, aim = 0, *relevant_measurement;
     int sign;
-    std::for_each(std::istream_iterator<std::string>(std::cin), std::istream_iterator<std::string>(), [&] (std::string str) {
+    std::for_each(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), [&] (std::string str) {
         if (str == "forward") {
             relevant_measurement = &horizontal;
             sign = 1;
@@ -50,3 +54,4 @@ int second_part() {
 
     return EXIT_SUCCESS;
 }
+#endif

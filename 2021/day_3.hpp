@@ -1,17 +1,21 @@
+#ifndef AOC_2021_3
+#define AOC_2021_3
+
 #include <iostream>
 #include <iterator>
 #include <bitset>
 #include <vector>
 #include <cmath>
 #include <list>
+#include "../input_source.hpp"
 
 auto constexpr bits_count = 12;
 
-int first_part() {
+int first_part_2021_3() {
     std::vector<size_t> counter(bits_count, 0);
     auto counter_place = counter.data();
     size_t total_input_size = 0;
-    std::for_each(std::istream_iterator<std::string>(std::cin), std::istream_iterator<std::string>(), [&] (auto elem) {
+    std::for_each(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), [&] (auto elem) {
         total_input_size++;
         for (auto current_bit : elem) *counter_place++ += current_bit - '0';
         counter_place = counter.data();
@@ -48,10 +52,10 @@ auto common_bit_number_search(auto start_it, auto stop_it, bool is_most_common_b
     return *start_it;
 }
 
-int second_part() {
+int second_part_2021_3() {
     std::vector<size_t> all_bits_numbers;
 
-    std::transform(std::istream_iterator<std::string>(std::cin), std::istream_iterator<std::string>(), std::back_inserter(all_bits_numbers), [] (std::string str) {
+    std::transform(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), std::back_inserter(all_bits_numbers), [] (std::string str) {
         std::bitset<bits_count> number(str);
         return number.to_ullong();
     });
@@ -62,3 +66,4 @@ int second_part() {
 
     return EXIT_SUCCESS;
 }
+#endif
