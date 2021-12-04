@@ -3,7 +3,7 @@
 #include "main_definitions_helper.hpp"
 
 #define YEAR 2020
-#define DAY 1
+#define DAY 9
 #define PART second
 #define TEST_RUN false
 
