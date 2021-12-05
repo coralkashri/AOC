@@ -2,10 +2,10 @@
 #include <fstream>
 #include "main_definitions_helper.hpp"
 
-#define YEAR 2021
-#define DAY 5
+#define YEAR 2020
+#define DAY 25
 #define PART first
-#define TEST_RUN false
+#define TEST_RUN true
 
 #if TEST_RUN
     #define INPUT_SOURCE cin
