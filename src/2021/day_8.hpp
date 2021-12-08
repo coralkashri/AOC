@@ -1,0 +1,8 @@
+//
+// Created by sherlock on 12/8/21.
+//
+
+#ifndef ADVENTOFCODE2021_DAY_8_HPP
+#define ADVENTOFCODE2021_DAY_8_HPP
+
+#endif //ADVENTOFCODE2021_DAY_8_HPP
