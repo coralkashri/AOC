@@ -22,10 +22,6 @@ enum corruption_type {
     INCOMPLETE
 };
 
-/*bool is_closer(char a) {
-    return a == '}' || a == ']' || a == '>' || a == ')';
-}*/
-
 bool is_opener(char a) {
     return a == '{' || a == '[' || a == '<' || a == '(';
 }
@@ -34,40 +30,6 @@ char get_corresponded_close(char open) {
     static std::unordered_map<char, char> open_to_close_map{{'(', ')'}, {'[', ']'}, {'{', '}'}, {'<', '>'}};
     return open_to_close_map.at(open);
 }
-
-/*corruption_type check_expression_helper(std::string *str, char &closer, char &illegal_character) {
-    if (str->empty()) return INCOMPLETE;
-    auto current_char = str->at(0);
-    if (is_closer(current_char)) {
-        closer = current_char;
-        return CORRECT;
-    } else {
-        char match_closer;
-        auto sub_str = str->substr(1);
-        auto res = check_expression_helper(&sub_str, match_closer, illegal_character);
-        if (res != CORRECT) return res;
-        *str = str->at(0) + sub_str;
-        if (get_corresponded_close(current_char) != match_closer) {
-            illegal_character = match_closer;
-            return CORRUPTED;
-        }
-        *str = str->substr(2);
-        return check_expression_helper(str, closer, illegal_character);
-    }
-}
-
-corruption_type check_expression(std::string &str, char &illegal_character) {
-    char match_closer;
-    auto sub_str = str.substr(1);
-    auto res = check_expression_helper(&sub_str, match_closer, illegal_character);
-    str = str.at(0) + sub_str;
-    if (res != CORRECT) return res;
-    if (get_corresponded_close(str.at(0)) != match_closer) {
-        illegal_character = match_closer;
-        return CORRUPTED;
-    }
-    return CORRECT;
-}*/
 
 std::string examine_expression(std::string expression, char &corrupted_data) {
     std::string res;
@@ -123,15 +85,6 @@ long long compute_incomplete_completed_line_value(std::string missing_closes) {
     }
     return score;
 }
-
-/*std::string compute_missing_closes(std::string expression) {
-    std::string res;
-    for (auto c : expression) {
-        if (is_opener(c)) res += c;
-        else res = res.substr(0, res.size() - 1);
-    }
-    return res;
-}*/
 
 int second_part_2021_10() {
     std::set<long long> incomplete_lines_values;
