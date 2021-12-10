@@ -32,7 +32,6 @@ auto perform_new_day(std::vector<unsigned long long > &numbers) {
 }
 
 int first_part_2021_6() {
-    // TODO Permutation
     std::vector<unsigned long long> fish_counter_by_number(9, 0);
     std::for_each(std::istream_iterator<WordDelimitedBy<','>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<','>>(), [&] (std::string str) {
         return fish_counter_by_number.at(std::stoi(str))++;

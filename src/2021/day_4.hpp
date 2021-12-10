@@ -103,4 +103,5 @@ int first_part_2021_4() {
 
     return EXIT_SUCCESS;
 }
+
 #endif

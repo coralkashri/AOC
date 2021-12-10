@@ -3,7 +3,7 @@
 #include "main_definitions_helper.hpp"
 
 #define YEAR 2021
-#define DAY 10
+#define DAY 7
 #define PART second
 #define TEST_RUN true
 

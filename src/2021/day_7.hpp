@@ -24,33 +24,41 @@ std::istream& operator>>(std::istream& is, WordDelimitedBy<delimiter>& output) {
     return is;
 }
 
-auto perform_new_day(std::vector<unsigned long long > &numbers) {
-    std::rotate(numbers.begin(), numbers.begin() + 1, numbers.end());
-    numbers.at(6) += numbers.back();
-}
-
-int fact(int n){
-    return (n==0) ? 0 : n + fact(n-1);
-}
-
 int first_part_2021_7() {
-    std::vector<size_t> all_numbers_sorted;
-    std::vector<size_t> sum_of_subs;
-    std::set<size_t> res;
-    std::transform(std::istream_iterator<WordDelimitedBy<','>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<','>>(), std::inserter(all_numbers_sorted, all_numbers_sorted.end()), [&] (auto str) {
+    std::vector<size_t> crab_locations;
+    std::transform(std::istream_iterator<WordDelimitedBy<','>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<','>>(), std::inserter(crab_locations, crab_locations.end()), [&] (auto str) {
         return std::stoll(str);
     });
-    auto [minimum, max] = std::minmax_element(all_numbers_sorted.begin(), all_numbers_sorted.end());
-    size_t minimum_cost;
-    for (auto min = *minimum; min < *max; min++) {
+    std::sort(crab_locations.begin(), crab_locations.end());
+    auto target_location = *std::next(crab_locations.begin(), crab_locations.size() / 2);
+
+    std::cout << "Required fuel: " << std::transform_reduce(crab_locations.begin(), crab_locations.end(), 0, std::plus<>{}, [target_location] (auto number) {
+        return std::abs((long long)(target_location - number));
+    }) << std::endl;
+
+    return EXIT_SUCCESS;
+}
+
+size_t calculate_required_fuel(size_t distance){
+    return distance * (distance + 1) / 2;
+}
+
+int second_part_2021_7() {
+    std::vector<size_t> crab_locations;
+    std::transform(std::istream_iterator<WordDelimitedBy<','>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<','>>(), std::inserter(crab_locations, crab_locations.end()), [&] (auto str) {
+        return std::stoll(str);
+    });
+    auto [brute_force_start, brute_force_stop] = std::minmax_element(crab_locations.begin(), crab_locations.end());
+    size_t minimum_cost = -1;
+    for (auto current_location_test = *brute_force_start; current_location_test < *brute_force_stop; current_location_test++) {
         size_t num = 0;
-        std::for_each(all_numbers_sorted.begin(), all_numbers_sorted.end(), [min, &num] (auto current_num) {
-            num += current_num > min ? fact(current_num - min) : fact(min - current_num);
+        std::for_each(crab_locations.begin(), crab_locations.end(), [current_location_test, &num] (auto actual_crab_location) {
+            num += calculate_required_fuel(std::abs((long long)(actual_crab_location - current_location_test)));
         });
         minimum_cost = std::min(minimum_cost, num);
     }
 
-    std::cout << "size: " << minimum_cost << std::endl;
+    std::cout << "Required fuel: " << minimum_cost << std::endl;
 
     return EXIT_SUCCESS;
 }
