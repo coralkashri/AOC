@@ -2,9 +2,9 @@
 #include <fstream>
 #include "main_definitions_helper.hpp"
 
-#define YEAR 2021
-#define DAY 12
-#define PART first
+#define YEAR 2020
+#define DAY 3
+#define PART second
 #define TEST_RUN true
 
 #if TEST_RUN

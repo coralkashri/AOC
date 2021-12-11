@@ -11,7 +11,6 @@
 #include <map>
 #include <set>
 #include <algorithm>
-#include <ranges>
 #include <numeric>
 #include <cmath>
 #include "../input_source.hpp"
