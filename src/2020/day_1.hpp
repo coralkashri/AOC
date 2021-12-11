@@ -41,4 +41,5 @@ int second_part_2020_1() {
     }
     return EXIT_SUCCESS;
 }
+
 #endif

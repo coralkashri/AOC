@@ -54,4 +54,5 @@ int second_part_2021_2() {
 
     return EXIT_SUCCESS;
 }
+
 #endif
