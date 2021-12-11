@@ -8,15 +8,7 @@
 #include <algorithm>
 #include <ranges>
 #include "../input_source.hpp"
-
-template<char delimiter>
-class WordDelimitedBy : public std::string{};
-
-template <char delimiter>
-std::istream& operator>>(std::istream& is, WordDelimitedBy<delimiter>& output) {
-    std::getline(is, output, delimiter);
-    return is;
-}
+#include "../tools/word_delimited_by.h"
 
 int first_part_2021_5() {
     std::map<std::pair<size_t, size_t>, size_t> occupied_points;

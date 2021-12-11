@@ -15,15 +15,7 @@
 #include <cmath>
 #include <sstream>
 #include "../input_source.hpp"
-
-template<char Delimiter>
-class WordDelimiterBy : public std::string {};
-
-template<char Delimiter>
-std::istream& operator>>(std::istream& cin, WordDelimiterBy<Delimiter> &output) {
-	std::getline(cin, output, Delimiter);
-	return cin;
-}
+#include "../tools/word_delimited_by.h"
 
 bool is_combination_exists(std::string comb, std::map<size_t, std::string> comb_map) {
 	return std::find_if(comb_map.begin(), comb_map.end(), [comb] (auto pair) {
@@ -86,7 +78,7 @@ bool is_all_segment_exists(std::string a, std::string b) {
 
 int first_part_2021_8() {
     std::vector<size_t> all_numbers;
-	std::transform(std::istream_iterator<WordDelimiterBy<'\n'>>(std::cin), std::istream_iterator<WordDelimiterBy<'\n'>>(), std::back_inserter(all_numbers), [&] (auto str) {
+	std::transform(std::istream_iterator<WordDelimitedBy<'\n'>>(std::cin), std::istream_iterator<WordDelimitedBy<'\n'>>(), std::back_inserter(all_numbers), [&] (auto str) {
 		size_t res;
 		std::string final_number;
 		std::string line;

@@ -16,15 +16,7 @@
 #include <ranges>
 #include <numeric>
 #include "../input_source.hpp"
-
-template<char delimiter>
-class WordDelimitedBy : public std::string{};
-
-template <char delimiter>
-std::istream& operator>>(std::istream& is, WordDelimitedBy<delimiter>& output) {
-    std::getline(is, output, delimiter);
-    return is;
-}
+#include "../tools/word_delimited_by.h"
 
 auto perform_new_day(std::vector<unsigned long long > &numbers) {
     std::rotate(numbers.begin(), numbers.begin() + 1, numbers.end());
