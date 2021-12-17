@@ -77,14 +77,13 @@ int second_part_2021_9() {
     basin = basin1 = basin2 = 0;
     for (auto low_number_location : low_numbers_locations) {
         std::vector<std::pair<int, int>> visited_places;
-        auto current_basin = search_neighbors_within_9_section(matrix, low_number_location.first,
-                                                               low_number_location.second, visited_places);
+        auto current_basin = search_neighbors_within_9_section(matrix, low_number_location.first, low_number_location.second, visited_places);
         if (current_basin > basin) basin2 = std::exchange(basin1, std::exchange(basin, current_basin));
         else if (current_basin > basin1) basin2 = std::exchange(basin1, current_basin);
         else if (current_basin > basin2) basin2 = current_basin;
     }
 
-    std::cout << "size: " << basin * basin1 * basin2 << std::endl;
+    std::cout << "Result: " << basin * basin1 * basin2 << std::endl;
 
     return EXIT_SUCCESS;
 }

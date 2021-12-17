@@ -18,22 +18,18 @@
 
 size_t increase_oct_level(auto &matrix, auto i, auto j, bool is_flashed, std::vector<std::pair<size_t, size_t>> &visited_points) {
     size_t flashes_count = 0;
-    if (std::find(visited_points.begin(), visited_points.end(), std::pair{i, j}) != visited_points.end()) return flashes_count;
     auto &current_number = matrix.at(i).at(j);
-    if (current_number < 0) return flashes_count;
-    current_number += 1;
-    if (current_number > 9) {
-        visited_points.template emplace_back(std::pair{i, j});
+    if (current_number < 0 || std::find(visited_points.begin(), visited_points.end(), std::pair{i, j}) != visited_points.end()) return flashes_count;
+    if (++current_number > 9) {
+        visited_points.emplace_back(std::pair{i, j});
         current_number = 0;
-        flashes_count += 1;
-        flashes_count += increase_oct_level(matrix, i + 1, j, true, visited_points);
-        flashes_count += increase_oct_level(matrix, i + 1, j + 1, true, visited_points);
-        flashes_count += increase_oct_level(matrix, i + 1, j - 1, true, visited_points);
-        flashes_count += increase_oct_level(matrix, i - 1, j, true, visited_points);
-        flashes_count += increase_oct_level(matrix, i - 1, j + 1, true, visited_points);
-        flashes_count += increase_oct_level(matrix, i - 1, j - 1, true, visited_points);
-        flashes_count += increase_oct_level(matrix, i, j + 1, true, visited_points);
-        flashes_count += increase_oct_level(matrix, i, j - 1, true, visited_points);
+        flashes_count++;
+        for (int i_offset = -1; i_offset <= 1; i_offset++) {
+            for (int j_offset = -1; j_offset <= 1; j_offset++) {
+                if (i_offset == 0 && j_offset == 0) continue;
+                flashes_count += increase_oct_level(matrix, i + i_offset, j + j_offset, true, visited_points);
+            }
+        }
     }
     return flashes_count;
 }
@@ -82,10 +78,11 @@ int second_part_2021_11() {
     mat.insert(mat.begin(), std::vector<int>(mat.at(0).size(), -3)); // Add padding
     mat.emplace_back(mat.at(0).size(), -3); // Add padding
 
-    size_t res = 0;
-    while (next_step(mat) < ((mat.size() - 2) * (mat.at(0).size() - 2))) res++;
+    size_t res = 1;
+    size_t octopus_count = ((mat.size() - 2) * (mat.at(0).size() - 2));
+    while (next_step(mat) < octopus_count) res++;
 
-    std::cout << "Result: " << res + 1 << std::endl;
+    std::cout << "Result: " << res << std::endl;
 
     return EXIT_SUCCESS;
 }

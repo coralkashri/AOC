@@ -17,11 +17,11 @@
 #include "../input_source.hpp"
 #include "../tools/word_delimited_by.h"
 
-bool is_start(std::string str) {
+bool is_start(const std::string &str) {
     return str == "start";
 }
 
-bool is_end(std::string str) {
+bool is_end(const std::string &str) {
     return str == "end";
 }
 
@@ -51,9 +51,9 @@ std::vector<std::string> get_available_paths(std::map<std::string, std::vector<s
     }
     if (!is_big_cave(current_point.at(0))) prev_small_caves.push_back(current_point);
     auto current_options = map.at(current_point);
-    for (auto option : current_options) {
+    for (const auto &option : current_options) {
         auto optional_results = get_available_paths(map, option, prev_small_caves);
-        for (auto optional_res : optional_results) {
+        for (const auto &optional_res : optional_results) {
             if (is_complete_path(optional_res)) {
                 res.emplace_back(current_point + "," + optional_res);
             }
@@ -82,7 +82,7 @@ int first_part_2021_12() {
 
     auto start_points = paths.at("start");
 
-    for (auto start_point : start_points) {
+    for (const auto &start_point : start_points) {
         std::vector<std::string> prev_small_caves;
         auto available_legal_paths_for_point = get_available_paths(paths, start_point, prev_small_caves);
         legal_paths.insert(legal_paths.end(), available_legal_paths_for_point.begin(), available_legal_paths_for_point.end());
@@ -117,9 +117,9 @@ std::vector<std::string> get_available_paths_2(std::map<std::string, std::vector
     }
     if (!is_big_cave(current_point.at(0))) prev_small_caves.push_back(current_point);
     auto current_options = map.at(current_point);
-    for (auto option : current_options) {
+    for (const auto &option : current_options) {
         auto optional_results = get_available_paths_2(map, option, prev_small_caves);
-        for (auto optional_res : optional_results) {
+        for (const auto &optional_res : optional_results) {
             if (is_complete_path(optional_res)) {
                 res.emplace_back(current_point + "," + optional_res);
             }
@@ -148,7 +148,7 @@ int second_part_2021_12() {
 
     auto start_points = paths.at("start");
 
-    for (auto start_point : start_points) {
+    for (const auto &start_point : start_points) {
         std::vector<std::string> prev_small_caves;
         auto available_legal_paths_for_point = get_available_paths_2(paths, start_point, prev_small_caves);
         legal_paths.insert(legal_paths.end(), available_legal_paths_for_point.begin(), available_legal_paths_for_point.end());

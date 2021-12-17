@@ -84,14 +84,14 @@ int first_part_2021_4() {
     std::vector<size_t> chosen_numbers;
     while (first_line >> std::back_inserter(chosen_numbers));
 
-    size_t min_win_turn = chosen_numbers.size(), relevant_winning_sum; // for second part: min_win_turn = 0 <-- max_win_turn
+    size_t min_win_turn = chosen_numbers.size(), relevant_winning_sum; // For second part: min_win_turn = 0 <-- max_win_turn
     size_t current_win_turn, current_win_sum;
     std::vector<int> current_board;
 
     get_line_stream(); // Empty line
     while (read_board(current_board)) {
         current_win_sum = get_win_sum(chosen_numbers, current_board, current_win_turn);
-        if (current_win_turn < min_win_turn) { // for second part: current_win_turn > max_win_turn
+        if (current_win_turn < min_win_turn) { // For second part: current_win_turn > max_win_turn
             min_win_turn = current_win_turn;
             relevant_winning_sum = current_win_sum;
         }
