@@ -1,24 +1,7 @@
 #ifndef AOC_2021_17
 #define AOC_2021_17
 
-#include <iostream>
-#include <iterator>
-#include <ranges>
-#include <vector>
-#include <bitset>
-#include <list>
-#include <chrono>
-#include <unordered_map>
-#include <map>
-#include <set>
-#include <algorithm>
-#include <numeric>
-#include <cmath>
-#include <sstream>
-#include "../input_source.hpp"
-#include "../tools/word_delimited_by.h"
-#include "../tools/get_line_stream.h"
-#include "../tools/std_extentions.hpp"
+#include "../tools/base_includes.h"
 
 using range_type = std::tuple<std::pair<int, int>, std::pair<int, int>>;
 
