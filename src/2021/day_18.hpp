@@ -143,16 +143,11 @@ int second_part_2021_18() {
 
     for (size_t i = 0; i < all_expressions.size(); i++) {
         auto base_expr = all_expressions[i];
-        for (size_t j = i + 1; j < all_expressions.size(); j++){
+        for (size_t j = 0; j < all_expressions.size(); j++) {
+            if (i == j) continue;
             auto base_expr_copy = base_expr;
             perform_addition(base_expr_copy, all_expressions[j]);
             auto mag = calc_magnitude(base_expr_copy);
-            if (mag > max) max = mag;
-
-            auto all_expressions_copy = all_expressions[j];
-            base_expr_copy = base_expr;
-            perform_addition(all_expressions_copy, base_expr_copy);
-            mag = calc_magnitude(all_expressions_copy);
             if (mag > max) max = mag;
         }
     }
