@@ -5,50 +5,47 @@
 #include <stack>
 #include <unordered_set>
 
-void print_image(std::map<std::pair<long long, long long>, bool> &image) {
-    int current_line = -1000;
-    for (auto &p : image) {
-        if (p.first.first != current_line) {
-            current_line = p.first.first;
-            std::cout << std::endl;
+using data_t = std::vector<std::vector<int>>;
+
+void print_image(data_t &image) {
+    for (auto &row : image) {
+        for (auto col : row) {
+            std::cout << (col ? '#' : '.');
         }
-        std::cout << (p.second ? '#' : '.');
+        std::cout << std::endl;
     }
     std::cout << std::endl;
     std::cout << std::endl;
 }
 
-void apply_algo(const std::string &image_enhancement_algo, std::map<std::pair<long long, long long>, bool> &image) {
-    auto copy_image = image;
-    std::map<std::pair<long long, long long>, bool> new_points;
-    for (auto &point : image) {
-        size_t num = 0;
-        auto current_point = point.first;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                num <<= 1;
-                auto offset_point = std::pair{current_point.first + i, current_point.second + j};
-                if (copy_image.find(offset_point) != copy_image.end()) {
-                    num |= copy_image[{current_point.first + i, current_point.second + j}];
-                } else {
-                    num |= true;
+void apply_algo(const std::string &image_enhancement_algo, data_t &image) {
+    static size_t iter = 0;
+    data_t new_points = image;
+    for (int i = 0; i < image.size(); i++) {
+        for (int j = 0; j < image[0].size(); j++) {
+            size_t num = 0;
+            for (int i1 = -1; i1 <= 1; i1++) {
+                for (int j1 = -1; j1 <= 1; j1++) {
+                    num <<= 1;
+                    if (i+i1 < 0 || j+j1 < 0 || i+i1 == image.size() || j+j1==image[0].size()) {
+                        num |= (iter % 2);
+                    } else {
+                        num |= image[i + i1][j + j1];
+                    }
                 }
             }
+            new_points[i][j] = image_enhancement_algo[num] == '#';
         }
-        new_points[current_point] = image_enhancement_algo[num] == '#';
     }
-    image = copy_image;
-    for (auto &point : new_points) {
-        image[point.first] = point.second;
-    }
+    image = new_points;
 
     print_image(image);
+    iter++;
 }
 
 int first_part_2021_20() {
-    std::map<std::pair<long long, long long>, bool> data;
+    data_t data;
     std::string image_enhancement_algo;
-    size_t current_line = 0;
     size_t line_size;
     std::for_each(std::istream_iterator<WordDelimitedBy<'\n'>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<'\n'>>(), [&] (std::string str) {
         if (str.empty()) return;
@@ -56,34 +53,27 @@ int first_part_2021_20() {
             image_enhancement_algo = str;
             return;
         }
-        //str = "." + str + ".";
+        str = "........................................................" + str + "........................................................";
+        data.emplace_back(std::vector<int>(str.size()));
         for (size_t i = 0; i < str.size(); i++) {
             line_size = str.size();
-            data[{current_line, i}] = str[i] == '#';
+            data.back()[i] = str[i] == '#';
         }
-        current_line++;
     });
-    /*for (size_t line_offset = 1; line_offset <= 1; line_offset++) {
-        for (size_t i = 0; i < line_size; i++) {
-            data[{-1 * line_offset, i}] = false;
-            data[{current_line + line_offset - 1, i}] = false;
-        }
-    }*/
+    for (size_t line_offset = 1; line_offset <= 100; line_offset++) {
+        data.insert(data.begin(), std::vector<int>(line_size, 0));
+        data.insert(data.end(), std::vector<int>(line_size, 0));
+    }
 
-    for (size_t i = 0; i < 2; i++) {
+    for (size_t i = 0; i < 50; i++) {
         apply_algo(image_enhancement_algo, data);
     }
 
-    std::cout << std::count_if(data.begin(), data.end(), [] (auto &point) {
-        return point.second;
+    std::cout << std::transform_reduce(data.begin(), data.end(), 0, std::plus<>{}, [] (auto &row) {
+        return std::count(row.begin(), row.end(), 1);
     }) << std::endl;
 
     return EXIT_SUCCESS;
 }
 
 #endif
-
-// 5573 -> too high
-
-// 5357 -> too low
-// 5350 -> too low
