@@ -2,8 +2,8 @@
 #include <fstream>
 #include "main_definitions_helper.hpp"
 
-#define YEAR 2021
-#define DAY 22
+#define YEAR 2015
+#define DAY 1
 #define PART second
 #define TEST_RUN true
 
