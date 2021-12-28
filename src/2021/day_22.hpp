@@ -77,7 +77,7 @@ struct cubes {
                 for (auto &r1 : common_excluded_cubes) {
                     try {
                         auto included_cube = excluded_cube.get_common_cube(r1);
-                        new_on_cubes.push_back(included_cube);
+                        new_on_cubes.push_back( included_cube);
                     } catch (...) {}
                 }
                 common_excluded_cubes.push_back(excluded_cube);
