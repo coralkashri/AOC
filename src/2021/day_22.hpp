@@ -7,6 +7,8 @@
 #include <atomic>
 #include <thread>
 
+std::vector<std::vector<std::vector<int>>> matrix;
+
 struct point {
     int64_t x, y, z;
 
@@ -38,20 +40,14 @@ struct range {
     std::vector<range> get_unique_ranges(const range &ref) const {
         std::vector<range> res;
         try {
-            //auto common = get_common_range(ref);
-            //if (ref.start - start > 0) res.push_back({start, common.start});
-            //if (stop - common.stop > 0) res.push_back({common.stop, stop});
+            auto common = get_common_range(ref);
 
-            if (ref.start >= start) {
-                if (ref.start - start > 0) res.push_back({start, ref.start});
-            } else {
-                res.push_back({ref.start, start});
+            if (common.start > start) { // this_start.....common_start
+                res.push_back({start, common.start});
             }
 
-            if (ref.stop >= stop) {
-                if (ref.stop - stop > 0) res.push_back({stop, ref.stop});
-            } else {
-                res.push_back({ref.stop, stop});
+            if (common.stop < stop) { // common_stop.....this_stop
+                res.push_back({common.stop, stop});
             }
         } catch (...) {
             res.push_back({start, stop});
@@ -71,11 +67,22 @@ struct range {
 struct cube {
     range x, y, z;
 
+    void update_cube_in_matrix() {
+        for (int x_pos = x.start; x_pos <= x.stop; x_pos++) {
+            for (int y_pos = y.start; y_pos <= y.stop; y_pos++) {
+                for (int z_pos = z.start; z_pos <= z.stop; z_pos++) {
+                    matrix[x_pos + 10][y_pos + 10][z_pos + 10]++;
+                }
+            }
+        }
+    }
+
     cube get_common_cube(const cube &ref) const {
         auto x_common_range = x.get_common_range(ref.x);
         auto y_common_range = y.get_common_range(ref.y);
         auto z_common_range = z.get_common_range(ref.z);
-        return {x_common_range, y_common_range, z_common_range};
+        if (auto c = cube{x_common_range, y_common_range, z_common_range}; c.size() == 0) throw std::runtime_error("Not in range");
+        else return c;
     }
 
     std::vector<cube> get_unique_cubes(const cube &ref) const {
@@ -84,10 +91,21 @@ struct cube {
         auto y_unique_ranges = y.get_unique_ranges(ref.y);
         auto z_unique_ranges = z.get_unique_ranges(ref.z);
 
+        auto [is_unique_x_range_exists, is_unique_y_range_exists, is_unique_z_range_exists] = std::tuple{true, true, true};
+
         if (x_unique_ranges.empty() && y_unique_ranges.empty() && z_unique_ranges.empty()) return res;
-        if (x_unique_ranges.empty()) x_unique_ranges.push_back(x);
-        if (y_unique_ranges.empty()) y_unique_ranges.push_back(y);
-        if (z_unique_ranges.empty()) z_unique_ranges.push_back(z);
+        if (x_unique_ranges.empty()) {
+            x_unique_ranges.push_back(x);
+            is_unique_x_range_exists = false;
+        }
+        if (y_unique_ranges.empty()) {
+            y_unique_ranges.push_back(y);
+            is_unique_y_range_exists = false;
+        }
+        if (z_unique_ranges.empty()) {
+            z_unique_ranges.push_back(z);
+            is_unique_z_range_exists = false;
+        }
 
         for (auto &unique_x : x_unique_ranges) {
             for (auto &unique_y : y_unique_ranges) {
@@ -96,6 +114,36 @@ struct cube {
                 }
             }
         }
+
+        try {
+            auto x_common_range = x.get_common_range(x);
+            if (is_unique_y_range_exists || is_unique_z_range_exists)
+                for (auto &unique_y : y_unique_ranges) {
+                    for (auto &unique_z : z_unique_ranges) {
+                        res.push_back({x_common_range, unique_y, unique_z});
+                    }
+                }
+        } catch (...) {}
+
+        try {
+            auto y_common_range = y.get_common_range(y);
+            if (is_unique_x_range_exists || is_unique_z_range_exists)
+                for (auto &unique_x : x_unique_ranges) {
+                    for (auto &unique_z : z_unique_ranges) {
+                        res.push_back({unique_x, y_common_range, unique_z});
+                    }
+                }
+        } catch (...) {}
+
+        try {
+            auto z_common_range = z.get_common_range(z);
+            if (is_unique_x_range_exists || is_unique_y_range_exists)
+                for (auto &unique_x : x_unique_ranges) {
+                    for (auto &unique_y : y_unique_ranges) {
+                        res.push_back({unique_x, unique_y, z_common_range});
+                    }
+                }
+        } catch (...) {}
         return res;
     }
 
@@ -110,36 +158,77 @@ struct cube {
 
 struct cubes {
     std::vector<cube> on_cubes;
+    unsigned long long _size = 0;
 
     void add_cube(const cube &on_cube) {
-        std::vector<cube> split_unique_cube;
-        split_unique_cube.push_back(on_cube);
-        for (auto &c : on_cubes) {
-            std::vector<cube> new_uniques;
-            for (auto &split : split_unique_cube) {
-                auto uniques = c.get_unique_cubes(split);
-                if (!uniques.empty()) new_uniques.insert(new_uniques.end(), uniques.begin(), uniques.end());
-            }
-            split_unique_cube = new_uniques;
+        /*std::vector<cube> split_unique_cube;
+        //_size += on_cube.size();
+        if (on_cubes.empty()) {
+            on_cubes.push_back(on_cube);
         }
-        if (!split_unique_cube.empty()) on_cubes.insert(on_cubes.end(), split_unique_cube.begin(), split_unique_cube.end());
+        *//*else {
+
+            auto c_c = on_cube.get_common_cube(on_cubes[0]);
+        }*//*
+        for (auto &c : on_cubes) {
+            auto uniques = on_cube.get_unique_cubes(c);
+            if (!uniques.empty())
+                split_unique_cube.insert(split_unique_cube.end(), uniques.begin(), uniques.end());
+        }
+        if (!split_unique_cube.empty()) {
+            on_cubes.insert(on_cubes.end(), split_unique_cube.begin(), split_unique_cube.end());
+            for (auto &new_c : split_unique_cube) {
+                _size += new_c.size();
+            }
+        }if (on_cubes.empty()) {
+            on_cubes.push_back(on_cube);
+            _size += on_cube.size();
+        } else {
+            std::vector<cube> all_uniques_parts;
+            for (auto &c : on_cubes) {
+                auto uniques = on_cube.get_unique_cubes(c);
+                if (!uniques.empty()) all_uniques_parts.insert(all_uniques_parts.end(), uniques.begin(), uniques.end());
+            }
+            on_cubes = all_uniques_parts;
+            on_cubes.push_back(on_cube);
+        }*/
+        exclude_cube(on_cube);
+        on_cubes.push_back(on_cube);
+        _size += on_cube.size();
     }
 
     void exclude_cube(const cube &off_cube) {
         std::vector<cube> new_on_cubes;
         for (auto &r : on_cubes) {
-            auto uniques = r.get_unique_cubes(off_cube);
-            if (!uniques.empty()) new_on_cubes.insert(new_on_cubes.end(), uniques.begin(), uniques.end());
+            try {
+                auto common = r.get_common_cube(off_cube);
+                _size -= common.size();
+                auto uniques = r.get_unique_cubes(off_cube);
+                if (!uniques.empty()) new_on_cubes.insert(new_on_cubes.end(), uniques.begin(), uniques.end());
+            } catch (...) {}
         }
-        //on_cubes = new_on_cubes;
+        on_cubes = new_on_cubes;
     }
 
     unsigned long long size() {
-        unsigned long long s = 0;
-        for (const auto &c : on_cubes) {
-            s += c.size();
+        unsigned long long actual_size = 0;
+        for (size_t i = 0; i < on_cubes.size(); i++) {
+            actual_size += on_cubes[i].size();
         }
-        return s;
+        return actual_size;
+    }
+
+    void print_matrix() {
+        matrix = std::vector<std::vector<std::vector<int>>>(21, std::vector<std::vector<int>>(21, std::vector<int>(21, 0)));
+        for (cube &c : on_cubes) c.update_cube_in_matrix();
+        for (auto &x_row : matrix) {
+            for (auto &y_row : x_row) {
+                for (auto &z_pos : y_row) {
+                    std::cout << z_pos << " ";
+                }
+                std::cout << "\n";
+            }
+        }
     }
 };
 
@@ -215,11 +304,12 @@ int second_part_2021_22() {
         if (current_action) {
             light_cubes.add_cube(current_cube);
         } else {
-            light_cubes.exclude_cube(current_cube);
+            //light_cubes.exclude_cube(current_cube);
         }
     });
 
     std::cout << light_cubes.size() << std::endl;
+    //light_cubes.print_matrix();
 
     return EXIT_SUCCESS;
 }
