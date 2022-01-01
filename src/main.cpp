@@ -4,7 +4,7 @@
 
 #define YEAR 2020
 #define DAY 17
-#define PART second
+#define PART first
 #define TEST_RUN true
 
 #if TEST_RUN
