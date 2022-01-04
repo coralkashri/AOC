@@ -36,12 +36,18 @@ struct matrix_xd_s {
 
     template <size_t CurrentDim = 0>
     static void get_all_dim_sizes(const auto &matrix, point_xd<Dims> &sizes) {
-        if constexpr (CurrentDim == Dims) {
-            sizes[CurrentDim] = 1;
-            return;
-        } else {
+        if constexpr (CurrentDim < Dims) {
             sizes[CurrentDim] = matrix.size();
             get_all_dim_sizes<CurrentDim + 1>(matrix[0], sizes);
+        }
+    }
+
+    template <size_t TargetDim, size_t CurrentDim = 0>
+    static auto get_target_dim_at_zero_point(const auto &matrix) {
+        if constexpr (CurrentDim == TargetDim) {
+            return matrix;
+        } else {
+            return get_target_dim_at_zero_point<TargetDim, CurrentDim + 1>(matrix[0]);
         }
     }
 
@@ -172,65 +178,77 @@ void perform_cycle(auto &matrix) {
     matrix = matrix_after_cycle;
 }
 
-/*void print_matrix(const matrix_4d_t &matrix) {
-    size_t current_dim_1 = 0;
-    while (current_dim_1 < matrix[0][0][0].size() - 1) {
-        size_t current_dim = 0;
-        while (current_dim < matrix[0][0].size() - 1) {
-            std::cout << "Z=" << current_dim << " W=" << current_dim_1 << std::endl;
-            std::for_each(matrix.begin(), matrix.end(), [current_dim, current_dim_1](const matrix_4d_t::value_type &v) {
-                std::for_each(v.begin(), v.end(), [current_dim, current_dim_1](const matrix_t::value_type &v1) {
-                    std::cout << (v1[current_dim][current_dim_1] ? std::to_string(v1[current_dim][current_dim_1]) : ".") << " ";
-                });
-                std::cout << std::endl;
-            });
-            current_dim++;
-            std::cout << "\n\n";
+template <size_t Dims, size_t CurrentDim = 2>
+auto& get_matrix_location_in_dims(const auto &matrix, point_xd<Dims> current_dims_point) {
+    auto &next_dim_mat = matrix[current_dims_point[CurrentDim]];
+    if constexpr (CurrentDim < Dims - 1) {
+        return get_matrix_location_in_dims<Dims, CurrentDim + 1>(next_dim_mat, current_dims_point);
+    } else return next_dim_mat;
+}
+
+template <size_t Dims, size_t CurrentDim = Dims>
+void print_matrix(const auto &matrix, point_xd<Dims> current_dims_point = {}) {
+    if constexpr (CurrentDim < 3) {
+        for (size_t i = 2; i < Dims; i++) {
+            std::cout << "Dims" << (i - 2) << " = " << current_dims_point[i] << " ";
         }
-        current_dim_1++;
-        std::cout << "\n\n";
+        std::cout << "\n";
+        std::for_each(matrix.begin(), matrix.end(), [&current_dims_point](const auto &v) {
+            std::for_each(v.begin(), v.end(), [&current_dims_point](const auto &v1) {
+                auto val_in_dims = get_matrix_location_in_dims<Dims>(v1, current_dims_point);
+                std::cout << (val_in_dims ? std::to_string(val_in_dims) : ".") << " ";
+            });
+            std::cout << std::endl;
+        });
+    } else {
+        auto current_dim_size = matrix_xd_s<Dims>::template get_target_dim_at_zero_point<CurrentDim - 1>(matrix).size();
+        for (size_t dim_i = 0; dim_i < current_dim_size; dim_i++) {
+            current_dims_point[CurrentDim - 1] = dim_i;
+            print_matrix<Dims, CurrentDim - 1>(matrix, current_dims_point);
+        }
     }
-}*/
+}
 
 template <size_t Dims>
 size_t compute_matrix_sum(matrix_xd_s_t<Dims> &matrix) {
     matrix_xd_s<Dims>::compute_negative_dimensions(matrix);
-
     return matrix_xd_s<Dims>::get_matrix_sum(matrix) * 2 - matrix_xd_s<Dims>::get_matrix_zero_dims_sum(matrix);
 }
 
-int first_part_2020_17() {
-    matrix_xd_s_t<3> matrix;
+template <size_t Dims>
+void insert_value_to_dim(auto &place_in_matrix, auto value) {
+    if constexpr (Dims < 3) place_in_matrix = value;
+    else insert_value_to_dim<Dims - 1>(place_in_matrix.emplace_back(), value);
+}
+
+template <size_t Dims>
+void perform_day_part() {
+    matrix_xd_s_t<Dims> matrix;
     std::for_each(std::istream_iterator<WordDelimitedBy<'\n'>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<'\n'>>(), [&] (std::string str) mutable {
         auto &current_x = matrix.emplace_back();
         for (char c : str) {
-            current_x.emplace_back().emplace_back() = c == '#';
+            insert_value_to_dim<Dims>(current_x.emplace_back(), c == '#');
         }
     });
-    prepare_matrix<3>(matrix); // Add padding
+    prepare_matrix<Dims>(matrix); // Add padding
 
     for (size_t i = 0; i < 6; i++)
-        perform_cycle<3>(matrix);
+        perform_cycle<Dims>(matrix);
 
-    std::cout << compute_matrix_sum<3>(matrix) << std::endl;
+    // print_matrix<Dims>(matrix);
+
+    std::cout << compute_matrix_sum<Dims>(matrix) << std::endl;
+}
+
+int first_part_2020_17() {
+    const size_t dimensions = 3;
+    perform_day_part<dimensions>();
     return EXIT_SUCCESS;
 }
 
 int second_part_2020_17() {
-    matrix_xd_s_t<4> matrix;
-    std::for_each(std::istream_iterator<WordDelimitedBy<'\n'>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<'\n'>>(), [&] (std::string str) mutable {
-        auto &current_x = matrix.emplace_back();
-        for (char c : str) {
-            current_x.emplace_back().emplace_back().emplace_back() = c == '#';
-        }
-    });
-    prepare_matrix<4>(matrix); // Add padding
-
-    for (size_t i = 0; i < 6; i++) {
-        perform_cycle<4>(matrix);
-    }
-
-    std::cout << compute_matrix_sum<4>(matrix) << std::endl;
+    const size_t dimensions = 4;
+    perform_day_part<dimensions>();
     return EXIT_SUCCESS;
 }
 
