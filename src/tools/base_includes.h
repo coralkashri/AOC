@@ -19,5 +19,7 @@
 #include "word_delimited_by.h"
 #include "get_line_stream.h"
 #include "std_extentions.hpp"
+#include "extended_binary_operations.hpp"
+#include "time_extensions.hpp"
 
 #endif
