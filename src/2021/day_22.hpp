@@ -1,3 +1,5 @@
+/* Work In Progress */
+
 #ifndef AOC_2021_22
 #define AOC_2021_22
 
