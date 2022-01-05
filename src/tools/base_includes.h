@@ -15,6 +15,10 @@
 #include <numeric>
 #include <cmath>
 #include <sstream>
+#include <stack>
+#include <unordered_set>
+#include <atomic>
+#include <thread>
 #include "../input_source.hpp"
 #include "word_delimited_by.h"
 #include "get_line_stream.h"
