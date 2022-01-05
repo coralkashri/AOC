@@ -19,6 +19,7 @@
 #include <unordered_set>
 #include <atomic>
 #include <thread>
+#include <execution>
 #include "../input_source.hpp"
 #include "word_delimited_by.h"
 #include "get_line_stream.h"
