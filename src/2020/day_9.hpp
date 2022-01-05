@@ -48,48 +48,20 @@ void find_sub_list_of_sum_x(const auto &numbers, T desired_sum, T &highest_sum_n
     }
 }
 
-int first_part_2020_9() {
+auto find_first_illegal_number(std::vector<size_t> &all_valid_numbers) {
 #if TEST_RUN
     const size_t preamble_size = 5;
 #else
     const size_t preamble_size = 25;
 #endif
     std::vector<std::pair<size_t, bool>> numbers;
-    std::unordered_map<size_t, bool> numbers_map;
-
-    std::generate_n(std::inserter(numbers, numbers.end()), preamble_size, [] () { return std::pair{std::stoll(*std::istream_iterator<std::string>(INPUT_SOURCE)), true}; });
-    numbers_map.insert(numbers.begin(), numbers.end());
-
-    auto first_illegal_number = std::find_if(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), [&] (auto str) {
-        auto current_number = std::stoll(str);
-        auto ans = !validate_num(numbers_map, current_number);
-        if (!ans) {
-            std::rotate(numbers.begin(), std::next(numbers.begin()), numbers.end());
-            numbers_map.erase(std::prev(numbers.end())->first);
-            std::prev(numbers.end())->first = current_number;
-            numbers_map.template insert(std::pair{current_number, true});
-        }
-        return ans;
-    });
-    std::cout << "First illegal number: " << *first_illegal_number << std::endl;
-    return EXIT_SUCCESS;
-}
-
-int second_part_2020_9() {
-#if TEST_RUN
-    const size_t preamble_size = 5;
-#else
-    const size_t preamble_size = 25;
-#endif
-    std::vector<std::pair<size_t, bool>> numbers;
-    std::vector<size_t> all_valid_numbers;
     std::unordered_map<size_t, bool> numbers_map;
 
     std::generate_n(std::inserter(numbers, numbers.end()), preamble_size, [] () { return std::pair{std::stoll(*std::istream_iterator<std::string>(INPUT_SOURCE)), true}; });
     std::transform(numbers.begin(), numbers.end(), std::back_inserter(all_valid_numbers), [] (const auto &pair) { return pair.first; });
     numbers_map.insert(numbers.begin(), numbers.end());
 
-    auto first_illegal_number_iter = std::find_if(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), [&] (auto str) {
+    return std::find_if(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), [&] (auto str) {
         auto current_number = std::stoll(str);
         auto ans = !validate_num(numbers_map, current_number);
         if (!ans) {
@@ -101,6 +73,17 @@ int second_part_2020_9() {
         }
         return ans;
     });
+}
+
+int first_part_2020_9() {
+    std::vector<size_t> all_valid_numbers;
+    std::cout << "First illegal number: " << *find_first_illegal_number(all_valid_numbers) << std::endl;
+    return EXIT_SUCCESS;
+}
+
+int second_part_2020_9() {
+    std::vector<size_t> all_valid_numbers;
+    auto first_illegal_number_iter = find_first_illegal_number(all_valid_numbers);
 
     size_t highest_num_of_sum, lowest_num_of_sum;
     size_t first_illegal_number = std::stoll(*first_illegal_number_iter);

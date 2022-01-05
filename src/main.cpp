@@ -3,7 +3,7 @@
 #include "main_definitions_helper.hpp"
 
 #define YEAR 2020
-#define DAY 6
+#define DAY 9
 #define PART second
 #define TEST_RUN true
 
@@ -14,6 +14,7 @@
 #endif
 
 #include INCLUDE_FILE(YEAR, DAY)
+#include "tools/time_extensions.hpp"
 
 int main() {
     auto start_time = std::chrono::high_resolution_clock::now();
