@@ -37,32 +37,27 @@ int first_part_2020_7() {
     return EXIT_SUCCESS;
 }
 
-/* // There might be cases were the following solution is better than the used one, due to re-computation of the same huge bags.
-void update_required_bags(std::unordered_map<std::string, std::vector<std::pair<std::string, size_t>>> &all_bags_requirements, std::string_view target_bag, size_t self_required_bags) {
-    for (auto &bag : all_bags_requirements) {
-        for (auto &req_bag : bag.second) {
-            if (req_bag.first == target_bag) {
-                req_bag.second += req_bag.second * self_required_bags;
-                break;
-            }
-        }
-    }
-}
-
-size_t compute_required_bags_helper(std::unordered_map<std::string, std::vector<std::pair<std::string, size_t>>> &all_bags_requirements, std::set<std::string> &computed_bags, std::string_view target_bag) {
+/*
+// There might be cases were the following solution is better than the used one, due to re-computation of the same huge bags.
+// This solution used memoization but didn't improve the computation time on my input.
+size_t compute_required_bags_helper(std::unordered_map<std::string, std::vector<std::pair<std::string, size_t>>> &all_bags_requirements, std::unordered_map<std::string, size_t> &computed_bags, std::string_view target_bag) {
     size_t required_bags_count = 0;
-    if (all_bags_requirements.find(target_bag.begin()) == all_bags_requirements.end() || computed_bags.find(target_bag.begin()) != computed_bags.end()) return 0;
+    if (all_bags_requirements.find(target_bag.begin()) == all_bags_requirements.end()) return 0;
     for (auto &required_bag : all_bags_requirements.at(target_bag.begin())) {
-        auto required_bags_for_required_bag = compute_required_bags_helper(all_bags_requirements, computed_bags, required_bag.first);
-        computed_bags.insert(required_bag.first);
-        update_required_bags(all_bags_requirements, required_bag.first, required_bags_for_required_bag);
-        required_bags_count += required_bag.second;
+        size_t required_bags_for_required_bag;
+        if (auto it = computed_bags.find(required_bag.first); it == computed_bags.end()) {
+            required_bags_for_required_bag = compute_required_bags_helper(all_bags_requirements, computed_bags, required_bag.first);
+            computed_bags.insert({required_bag.first, required_bags_for_required_bag});
+        } else {
+            required_bags_for_required_bag = (*it).second;
+        }
+        required_bags_count += required_bag.second + required_bag.second * required_bags_for_required_bag;
     }
     return required_bags_count;
 }
 
 size_t compute_required_bags(std::unordered_map<std::string, std::vector<std::pair<std::string, size_t>>> &all_bags_requirements, std::string_view target_bag) {
-    std::set<std::string> computed_bags;
+    std::unordered_map<std::string, size_t> computed_bags;
     return compute_required_bags_helper(all_bags_requirements, computed_bags, target_bag);
 }*/
 
