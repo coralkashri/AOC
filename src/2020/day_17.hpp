@@ -8,23 +8,6 @@
 #include <thread>
 
 template <size_t Dims>
-struct point_xd {
-    std::array<int64_t, Dims> places;
-
-    bool operator<(const point_xd<Dims> &ref) const {
-        return places < ref.places;
-    }
-
-    bool operator==(const point_xd& ref) const {
-        return places == ref.places;
-    }
-
-    auto& operator[](size_t dim) {
-        return places[dim];
-    }
-};
-
-template <size_t Dims>
 struct matrix_xd_s {
     using type = std::vector<typename matrix_xd_s<Dims - 1>::type>;
 

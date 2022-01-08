@@ -26,5 +26,7 @@
 #include "std_extentions.hpp"
 #include "extended_binary_operations.hpp"
 #include "time_extensions.hpp"
+#include "point.hpp"
+#include "hash_tools.hpp"
 
 #endif
