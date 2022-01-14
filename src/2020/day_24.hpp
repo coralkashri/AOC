@@ -7,7 +7,8 @@ namespace day_24_tools {
 
     class floor {
     private:
-        using touched_tiles_t = std::unordered_map<point_xd<2>, bool>;
+        using touched_tiles_t = std::vector<std::vector<uint8_t>>;
+        const size_t floor_rows_count = 300, floor_lines_count = 300;
 
     public:
         floor() : tiles_offsets_by_step({
@@ -17,29 +18,31 @@ namespace day_24_tools {
                                                 {"w",  {-1, 1}},
                                                 {"nw", {0,  2}},
                                                 {"ne", {1,  1}},
-                                        }) {
+                                                {"self", {0,  0}},
+                                        }),
+                  all_tiles(std::vector<std::vector<uint8_t>>(floor_rows_count, std::vector<uint8_t>(floor_lines_count, false))) {
             compute_initial_floor_state();
         }
 
         size_t get_number_of_black_tiles() {
-            return std::count_if(touched_tiles.begin(), touched_tiles.end(), [](const auto &pair) { return pair.second; });
+            return black_tiles.size();
         }
 
         void advanced_days(size_t days) {
-            insert_all_neighbors();
             for (size_t i = 0; i < days; i++) advanced_tiles_day();
         }
 
     private:
         const std::unordered_map<std::string, point_xd<2>> tiles_offsets_by_step;
-        touched_tiles_t touched_tiles;
+        touched_tiles_t all_tiles;
+        std::list<point_xd<2>> black_tiles;
 
         void update_location(point_xd<2> &current_location, std::string_view next_step) {
             current_location += tiles_offsets_by_step.at({next_step.begin(), next_step.end()});
         }
 
         auto compute_location(std::string_view all_steps) {
-            point_xd<2> target_location{0, 0};
+            point_xd<2> target_location{(int64_t)all_tiles.size() / 2, (int64_t)all_tiles[0].size() / 2};
             for (size_t i = 0; i < all_steps.size(); i += 1 + (all_steps[i] != 'e' && all_steps[i] != 'w')) {
                 update_location(target_location, {all_steps.begin() + i, all_steps.begin() + i + 1 + (all_steps[i] != 'e' && all_steps[i] != 'w')});
             }
@@ -49,38 +52,38 @@ namespace day_24_tools {
         void compute_initial_floor_state() {
             std::for_each(std::istream_iterator<WordDelimitedBy<'\n'>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<'\n'>>(), [&](std::string str) mutable {
                 auto location = compute_location(str);
-                touched_tiles[location] = !touched_tiles[location];
+                all_tiles[location.places[0]][location.places[1]] = !all_tiles[location.places[0]][location.places[1]];
+                if (all_tiles[location.places[0]][location.places[1]]) black_tiles.insert(black_tiles.end(), {location.places[0], location.places[1]});
+                else std::erase(black_tiles, point_xd<2>{location.places[0], location.places[1]});
             });
         }
 
-        uint8_t get_black_tiles_neighbors_count(const point_xd<2> &point, touched_tiles_t &new_tiles) const {
+        uint8_t get_black_tiles_neighbors_count(const point_xd<2> &point) const {
             uint8_t res = 0;
             for (auto [symbol, offset] : tiles_offsets_by_step) {
-                if (auto it = touched_tiles.find(point + offset); it != touched_tiles.end()) {
-                    res += it->second;
-                }
-                new_tiles[point + offset];
+                auto location = point + offset;
+                res += all_tiles[location.places[0]][location.places[1]];
             }
+            res -= all_tiles[point.places[0]][point.places[1]];
             return res;
         }
 
         void advanced_tiles_day() {
-            touched_tiles_t new_tiles = touched_tiles;
-            for (const auto &tile : touched_tiles) {
-                auto black_tiles_neighbors_count = get_black_tiles_neighbors_count(tile.first, new_tiles);
-                new_tiles[tile.first] = tile.second ? black_tiles_neighbors_count > 0 && black_tiles_neighbors_count <= 2 : black_tiles_neighbors_count == 2;
-            }
-            touched_tiles = new_tiles;
-        }
-
-        void insert_all_neighbors() {
-            touched_tiles_t new_tiles = touched_tiles;
-            for (const auto &tile : touched_tiles) {
+            touched_tiles_t new_tiles = all_tiles;
+            std::list<point_xd<2>> new_black_tiles;
+            std::unordered_set<point_xd<2>> visited_locations;
+            for (const auto &black_tile : black_tiles) {
                 for (auto [symbol, offset] : tiles_offsets_by_step) {
-                    new_tiles[tile.first + offset];
+                    auto current_location = black_tile + offset;
+                    if (visited_locations.find(current_location) != visited_locations.end()) continue;
+                    visited_locations.insert(current_location);
+                    auto black_tiles_neighbors_count = get_black_tiles_neighbors_count(current_location);
+                    new_tiles[current_location[0]][current_location[1]] = all_tiles[current_location[0]][current_location[1]] ? black_tiles_neighbors_count > 0 && black_tiles_neighbors_count <= 2 : black_tiles_neighbors_count == 2;
+                    if (new_tiles[current_location[0]][current_location[1]]) new_black_tiles.insert(new_black_tiles.end(), current_location);
                 }
             }
-            touched_tiles = new_tiles;
+            std::swap(all_tiles, new_tiles);
+            std::swap(black_tiles, new_black_tiles);
         }
     };
 }
