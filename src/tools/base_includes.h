@@ -20,6 +20,7 @@
 #include <atomic>
 #include <thread>
 #include <execution>
+#include <span>
 #include "../input_source.hpp"
 #include "word_delimited_by.h"
 #include "get_line_stream.h"

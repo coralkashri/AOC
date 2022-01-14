@@ -22,6 +22,16 @@ struct point_xd {
     auto operator[](size_t dim) const {
         return places[dim];
     }
+
+    auto operator+=(const point_xd& ref) {
+        std::transform(places.begin(), places.end(), ref.places.begin(), places.begin(), std::plus<>{});
+    }
+
+    auto operator+(const point_xd& ref) const {
+        point_xd res;
+        std::transform(places.begin(), places.end(), ref.places.begin(), res.places.begin(), std::plus<>{});
+        return res;
+    }
 };
 
 template <>

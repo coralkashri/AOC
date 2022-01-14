@@ -4,7 +4,7 @@
 #include <sys/resource.h>
 
 #define YEAR 2020
-#define DAY 13
+#define DAY 24
 #define PART second
 #define TEST_RUN true
 
