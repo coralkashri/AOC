@@ -29,5 +29,6 @@
 #include "time_extensions.hpp"
 #include "point.hpp"
 #include "hash_tools.hpp"
+#include "compile_time_math.hpp"
 
 #endif
