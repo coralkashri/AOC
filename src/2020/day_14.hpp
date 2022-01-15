@@ -20,15 +20,16 @@ public:
 
     void set_value(uint64_t addr, uint64_t value) {
         if constexpr (Version == 1) {
-            current_sum -= memory[addr];
-            memory[addr] = apply_mask(value);
-            current_sum += memory[addr];
+            auto &target_memory = memory[addr];
+            current_sum -= target_memory;
+            target_memory = apply_mask(value);
+            current_sum += target_memory;
         } else {
             auto possible_addrs = apply_memory_floating_masks(addr);
             for (const auto &possible_addr : possible_addrs) {
-                current_sum -= memory[possible_addr.to_ullong()];
-                memory[possible_addr.to_ullong()] = value;
-                current_sum += memory[possible_addr.to_ullong()];
+                auto &target_memory = memory[possible_addr.to_ullong()];
+                current_sum -= target_memory - value;
+                target_memory = value;
             }
         }
     }
@@ -41,7 +42,7 @@ private:
     mask_t zero_mask;
     mask_t one_mask;
     std::vector<mask_t> floating_masks;
-    std::set<uint8_t> floating_mask_points;
+    std::unordered_set<uint8_t> floating_mask_points;
     std::unordered_map<uint64_t, uint64_t> memory;
     uint64_t current_sum = 0;
 
@@ -75,10 +76,10 @@ private:
         for (size_t i = idx; i < mask.size(); i++) {
             if (mask[i] == '0') continue;
             if (mask[i] == 'X') {
-                mask_t possible_mask_1 = modified_mask;
+                //mask_t possible_mask_1 = modified_mask;
                 floating_mask_points.insert(mask.size() - 1 - i);
-                set_mask_ver2(mask, possible_mask_1 |= (1ull << (mask.size() - 1 - i)), i + 1);
                 set_mask_ver2(mask, modified_mask, i + 1);
+                set_mask_ver2(mask, modified_mask |= (1ull << (mask.size() - 1 - i)), i + 1);
                 return;
             } else if (mask[i] == '1') modified_mask |= 1ull << (mask.size() - 1 - i);
         }
