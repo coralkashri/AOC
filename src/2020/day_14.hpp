@@ -3,9 +3,6 @@
 
 #include "../tools/base_includes.h"
 
-template <typename T>
-constexpr uint8_t bits_count = sizeof(T) * 8;
-
 template <size_t Version>
 class memory_management {
 private:
