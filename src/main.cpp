@@ -4,8 +4,8 @@
 #include <sys/resource.h>
 
 #define YEAR 2020
-#define DAY 14
-#define PART second
+#define DAY 15
+#define PART first
 #define TEST_RUN true
 
 #if TEST_RUN
