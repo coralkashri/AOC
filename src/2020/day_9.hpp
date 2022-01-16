@@ -50,7 +50,7 @@ void find_sub_list_of_sum_x(const auto &numbers, T desired_sum, T &highest_sum_n
 
 auto find_first_illegal_number(std::vector<size_t> &all_valid_numbers) {
 #if TEST_RUN
-    const size_t preamble_size = 5;
+    const size_t preamble_size = 25; // 5
 #else
     const size_t preamble_size = 25;
 #endif

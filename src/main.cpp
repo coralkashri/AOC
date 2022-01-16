@@ -1,11 +1,13 @@
 #include <iostream>
-#include <fstream>
 #include "main_definitions_helper.hpp"
 #include <sys/resource.h>
+#include <vector>
+#include <chrono>
+#include <execution>
 
 #define YEAR 2020
-#define DAY 15
-#define PART second
+#define DAY 25
+#define PART first
 #define TEST_RUN true
 
 #if TEST_RUN
