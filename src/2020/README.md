@@ -3,7 +3,7 @@
 ## Solutions Execution Time
 | Day | Part   | Avg execution time |
 | --- | ------ | ------------------ |
-|  1  | first  | TODO
+|  [1](./day_1.hpp)  | first  | TODO
 |  1  | second | TODO
 |  2  | first  | TODO
 |  2  | second | TODO
