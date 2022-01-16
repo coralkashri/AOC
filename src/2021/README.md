@@ -28,4 +28,5 @@
 | [23](./day_23.hpp) |  |  |
 | [24](./day_24.hpp) |  |  |
 | [25](./day_25.hpp) |  |  |
+
 Generated using: [coralkashri/AoC-execution_time_table_generator](https://github.com/coralkashri/AoC-execution_time_table_generator)
