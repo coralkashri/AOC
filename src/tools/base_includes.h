@@ -21,6 +21,7 @@
 #include <thread>
 #include <execution>
 #include <span>
+#include <regex>
 #include "../input_source.hpp"
 #include "word_delimited_by.h"
 #include "get_line_stream.h"

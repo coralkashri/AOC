@@ -18,7 +18,7 @@
 | [13](./day_13.hpp) |  30 microseconds |  35 microseconds (got help from other solutions) |
 | [14](./day_14.hpp) |  220 microseconds |  19 milliseconds |
 | [15](./day_15.hpp) |  40 microseconds |  650 milliseconds |
-| [16](./day_16.hpp) |  |  |
+| [16](./day_16.hpp) |  22 milliseconds 300 microseconds |  32 milliseconds |
 | [17](./day_17.hpp) |  300 microseconds |  2 milliseconds 700 microseconds |
 | [18](./day_18.hpp) |  |  |
 | [19](./day_19.hpp) |  |  |
