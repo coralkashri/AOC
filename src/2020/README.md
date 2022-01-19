@@ -20,7 +20,7 @@
 | [15](./day_15.hpp) |  40 microseconds |  650 milliseconds |
 | [16](./day_16.hpp) |  22 milliseconds 300 microseconds |  32 milliseconds |
 | [17](./day_17.hpp) |  300 microseconds |  2 milliseconds 700 microseconds |
-| [18](./day_18.hpp) |  |  |
+| [18](./day_18.hpp) |  180 microseconds |  200 microseconds |
 | [19](./day_19.hpp) |  |  |
 | [20](./day_20.hpp) |  |  |
 | [21](./day_21.hpp) |  |  |
