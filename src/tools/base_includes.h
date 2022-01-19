@@ -31,5 +31,6 @@
 #include "point.hpp"
 #include "hash_tools.hpp"
 #include "compile_time_math.hpp"
+#include "efficient_stack.hpp"
 
 #endif
