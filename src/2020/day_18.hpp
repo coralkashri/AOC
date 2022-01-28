@@ -65,8 +65,7 @@ int first_part_2020_18() {
             return 0;
     };
     std::cout << std::transform_reduce(std::istream_iterator<WordDelimitedBy<'\n'>>(INPUT_SOURCE), std::istream_iterator<WordDelimitedBy<'\n'>>(), 0ull, std::plus<>{}, [&] (std::string str) mutable {
-        auto postfix = infix_to_postfix(str.begin(), preced);
-        return solve_postfix(postfix.begin());
+        return solve_postfix(infix_to_postfix(str.begin(), preced).begin());
     }) << std::endl;
 
     return EXIT_SUCCESS;
