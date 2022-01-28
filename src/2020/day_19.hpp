@@ -25,8 +25,8 @@ public:
         }
     }
 
-    void set_legal_options(const legal_options_t &new_legal_options) {
-        legal_options = new_legal_options;
+    void set_legal_options(legal_options_t &&new_legal_options) {
+        std::swap(legal_options, new_legal_options);
         is_final = true;
     }
 
@@ -73,13 +73,13 @@ public:
     [[nodiscard]] bool is_message_legal_by_loops_rule_0(std::string &&message) const {
         auto copy_message = message;
         auto &rule_42_legal_options = rules[42].get_rule();
-        auto should_start_with_42 = copy_message.substr(0, rule_42_legal_options[0].size());
+        auto should_start_with_42 = copy_message.substr(0, rule_42_legal_options.front().size());
         bool is_legal_start = false;
         for (auto &legal_option : rule_42_legal_options) {
             if (should_start_with_42 == legal_option) is_legal_start = true;
         }
         if (is_legal_start) {
-            copy_message = copy_message.substr(rule_42_legal_options[0].size());
+            copy_message = copy_message.substr(rule_42_legal_options.front().size());
             return check_message_polyndrome_of_31_from_end(copy_message) && check_if_rest_message_constructed_with_42_rule(copy_message);
         }
         return false;
@@ -106,7 +106,7 @@ private:
 
     rule::legal_options_t parse_rule(rule &rule_to_parse) {
         rule::legal_options_t actual_legal_options;
-        auto &legal_options = rule_to_parse.get_rule()[0];
+        auto &legal_options = rule_to_parse.get_rule().front();
         if (legal_options.empty()) return actual_legal_options;
         std::vector<std::string> and_conditions;
         and_conditions.reserve(2);
@@ -119,7 +119,7 @@ private:
         std::regex number_pattern(R"([0-9]?[0-9]?[0-9])");
         for (auto &current_and_condition : and_conditions) {
             auto numbers_it = std::sregex_iterator(current_and_condition.begin(), current_and_condition.end(), number_pattern);
-            std::vector<std::vector<std::string>> combinations_per_number(std::distance(numbers_it, std::sregex_iterator()));
+            std::vector<rule::legal_options_t> combinations_per_number(std::distance(numbers_it, std::sregex_iterator()));
             size_t current_number = 0;
             while (numbers_it != std::sregex_iterator()) {
                 auto &current_target_rule = rules[std::stoi(numbers_it->str())];
@@ -141,19 +141,19 @@ private:
         auto &rule_31_legal_options = rules[31].get_rule();
         int amount_of_31_endings = 0;
         while (!message.empty()) {
-            if (!std::ranges::any_of(rule_31_legal_options, [should_end_with_31 = message.substr(message.size() - rule_31_legal_options[0].size())] (const auto &legal_option) {
+            if (!std::ranges::any_of(rule_31_legal_options, [should_end_with_31 = message.substr(message.size() - rule_31_legal_options.front().size())] (const auto &legal_option) {
                 return should_end_with_31 == legal_option;
             })) break;
             ++amount_of_31_endings;
-            message = message.substr(0, message.size() - rule_31_legal_options[0].size());
+            message = message.substr(0, message.size() - rule_31_legal_options.front().size());
         }
         if (!amount_of_31_endings) return false;
         while (!message.empty() && amount_of_31_endings) {
-            if (!std::ranges::any_of(rule_42_legal_options, [should_end_with_42 = message.substr(message.size() - rule_42_legal_options[0].size())] (const auto &legal_option) {
+            if (!std::ranges::any_of(rule_42_legal_options, [should_end_with_42 = message.substr(message.size() - rule_42_legal_options.front().size())] (const auto &legal_option) {
                 return should_end_with_42 == legal_option;
             })) break;
             --amount_of_31_endings;
-            message = message.substr(0, message.size() - rule_42_legal_options[0].size());
+            message = message.substr(0, message.size() - rule_42_legal_options.front().size());
         }
         return !amount_of_31_endings;
     }
@@ -161,10 +161,10 @@ private:
     [[nodiscard]] bool check_if_rest_message_constructed_with_42_rule(std::string &message) const {
         auto &rule_42_legal_options = rules[42].get_rule();
         while (!message.empty()) {
-            if (!std::ranges::any_of(rule_42_legal_options, [should_end_with_42 = message.substr(message.size() - rule_42_legal_options[0].size())] (const auto &legal_option) {
+            if (!std::ranges::any_of(rule_42_legal_options, [should_end_with_42 = message.substr(message.size() - rule_42_legal_options.front().size())] (const auto &legal_option) {
                 return should_end_with_42 == legal_option;
             })) return false;
-            message = message.substr(0, message.size() - rule_42_legal_options[0].size());
+            message = message.substr(0, message.size() - rule_42_legal_options.front().size());
         }
         return true;
     }
