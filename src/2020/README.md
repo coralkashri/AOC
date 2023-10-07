@@ -25,7 +25,7 @@
 | [20](./day_20.hpp) |  |  |
 | [21](./day_21.hpp) |  |  |
 | [22](./day_22.hpp) |  |  |
-| [23](./day_23.hpp) |  |  |
+| [23](./day_23.hpp) |  43 microseconds 43 nanoseconds | 5 seconds 530 milliseconds |
 | [24](./day_24.hpp) |  700 microseconds |  120 milliseconds 500 microseconds |
 | [25](./day_25.hpp) |  260 milliseconds |  |
 

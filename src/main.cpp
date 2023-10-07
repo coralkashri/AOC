@@ -6,8 +6,9 @@
 #include <execution>
 
 #define YEAR 2020
-#define DAY 19
-#define PART first
+#define DAY 23
+//#define PART first
+#define PART second
 #define TEST_RUN true
 
 #if TEST_RUN
