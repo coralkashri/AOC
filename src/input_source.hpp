@@ -4,7 +4,7 @@
 #include <fstream>
 
 #if TEST_RUN
-static std::ifstream cin("test_input.txt");
+    static std::ifstream cin(INPUT_SOURCE_FILE_NAME);
 #endif
 
 #endif //ADVENTOFCODE2021_INPUT_SOURCE_HPP
