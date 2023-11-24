@@ -7,9 +7,9 @@
 
 #define YEAR 2022
 #define DAY 3
-#define PART first
-//#define PART second
-#define USE_TEST_CASE true
+//#define PART first
+#define PART second
+#define USE_TEST_CASE false
 #define TEST_RUN true
 
 #if TEST_RUN
