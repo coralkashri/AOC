@@ -6,12 +6,21 @@
 #include <execution>
 
 #define YEAR 2022
-#define DAY 13
-//#define PART first
-#define PART second
+#define DAY 3
+#define PART first
+//#define PART second
+#define USE_TEST_CASE true
 #define TEST_RUN true
 
 #if TEST_RUN
+    #if USE_TEST_CASE
+        #define FILE_NAME test_run_
+    #else
+        #define FILE_NAME real_run_
+    #endif
+
+    #define INPUT_SOURCE_FILE_NAME STRINGIFY(CAT_4(FILE_NAME, YEAR, _, DAY)) ".txt"
+
     #define INPUT_SOURCE cin
 #else
     #define INPUT_SOURCE std::cin
