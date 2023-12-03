@@ -11,6 +11,7 @@
 #include <set>
 
 #include "../input_source.hpp"
+#include "../tools/base_includes.h"
 
 namespace aoc_2022_13_tools {
     template<class... Ts>
@@ -18,28 +19,6 @@ namespace aoc_2022_13_tools {
         using Ts::operator()...;
     };
     template<class... Ts> overloaded(Ts...)->overloaded<Ts...>;
-
-    class str_number {
-    public:
-        void operator+=(char c) {
-            number += c;
-        }
-
-        void reset() {
-            number = "";
-        }
-
-        bool is_number_ready() {
-            return !number.empty();
-        }
-
-        int get_number() {
-            return (int) std::stol(number);
-        }
-
-    private:
-        std::string number;
-    };
 
     class section {
     public:
@@ -132,7 +111,7 @@ namespace aoc_2022_13_tools {
 
     private:
         str_number current_numer;
-        std::vector<std::variant<int, section *>> numbers;
+        std::vector<std::variant<long long, section *>> numbers;
         section *parent_section;
     };
 
