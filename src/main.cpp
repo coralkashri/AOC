@@ -7,8 +7,8 @@
 
 #define YEAR 2023
 #define DAY 1
-//#define PART first
-#define PART second
+#define PART first
+//#define PART second
 #define USE_TEST_CASE false
 #define TEST_RUN true
 
@@ -19,7 +19,7 @@
         #define FILE_NAME real_run_
     #endif
 
-    #define INPUT_SOURCE_FILE_NAME STRINGIFY(CAT_4(FILE_NAME, YEAR, _, DAY)) ".txt"
+    #define INPUT_SOURCE_FILE_NAME STRINGIFY(CAT_4(../input_files/FILE_NAME, YEAR, _, DAY)) ".txt"
 
     #define INPUT_SOURCE cin
 #else
