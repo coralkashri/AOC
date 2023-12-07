@@ -84,45 +84,4 @@ private:
 	ContT<ValT> data;
 };
 
-template<typename ValT = long long, template<typename...> typename ContT = std::vector, char Sep = ' '>
-class str_numbers {
-public:
-    str_numbers() = default;
-
-    str_numbers(std::string_view str) {
-        set(str);
-    }
-
-    void set(std::string_view str) {
-        for (char c: str) {
-            *this += c;
-        }
-    }
-
-    void operator+=(char c) {
-        if (c == Sep) {
-            is_prev_number_ready = true;
-            return;
-        }
-
-        if (!std::isdigit(c)) return;
-
-        if (is_prev_number_ready) {
-            is_prev_number_ready = false;
-            data.push_back(0);
-        }
-
-        data.back() *= 10;
-        data.back() += c - '0';
-    }
-
-    auto &get() {
-        return data;
-    }
-
-private:
-    bool is_prev_number_ready = true;
-    ContT<ValT> data;
-};
-
 #endif //ADVENTOFCODE_STR_NUMBER_HPP
