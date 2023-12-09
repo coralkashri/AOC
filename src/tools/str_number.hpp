@@ -59,8 +59,15 @@ public:
 		if (c == Sep)
 		{
 			is_prev_number_ready = true;
+            data.back() *= is_negative ? -1 : 1;
+            is_negative = false;
 			return;
 		}
+
+        if (c == '-') {
+            is_negative = true;
+            return;
+        }
 
 		if (!std::isdigit(c)) return;
 
@@ -76,12 +83,14 @@ public:
 
 	auto& get()
 	{
+        data.back() *= is_negative ? -1 : 1;
 		return data;
 	}
 
 private:
 	bool is_prev_number_ready = true;
 	ContT<ValT> data;
+    bool is_negative = false;
 };
 
 #endif //ADVENTOFCODE_STR_NUMBER_HPP
