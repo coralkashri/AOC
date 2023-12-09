@@ -5,7 +5,7 @@ template<typename Tp = void>
 struct max;
 
 template<typename Tp>
-struct max : public std::binary_function<Tp, Tp, Tp>
+struct max
 {
     constexpr Tp operator()(const Tp& x, const Tp& y) const { return std::max(x, y); }
 };
@@ -24,7 +24,7 @@ template<typename Tp = void>
 struct min;
 
 template<typename Tp>
-struct min : public std::binary_function<Tp, Tp, Tp>
+struct min
 {
     constexpr Tp operator()(const Tp& x, const Tp& y) const { return std::min(x, y); }
 };
