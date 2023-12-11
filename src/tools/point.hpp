@@ -32,6 +32,14 @@ struct point_xd {
         std::transform(places.begin(), places.end(), ref.places.begin(), res.places.begin(), std::plus<>{});
         return res;
     }
+
+    [[nodiscard]] size_t simple_distance(const point_xd other) const {
+        size_t distance = 0;
+        for (size_t dim = 0; dim < Dims; ++dim) {
+            distance += std::abs(places[dim] - other.places[dim]);
+        }
+        return distance;
+    }
 };
 
 template <>
