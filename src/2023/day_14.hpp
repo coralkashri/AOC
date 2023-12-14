@@ -12,7 +12,7 @@
 #include "../tools/base_includes.h"
 
 int first_part_2023_14() {
-	std::cout << std::transform_reduce(std::istream_iterator<std::string>(std::cin), std::istream_iterator<std::string>(), 0ull, std::plus<>(), [weights = std::vector<size_t>(), current_line_weight = 0ull](std::string str) mutable {
+	std::cout << std::transform_reduce(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), 0ull, std::plus<>(), [weights = std::vector<size_t>(), current_line_weight = 0ull](std::string str) mutable {
 		if (weights.empty()) {
 			weights.resize(str.size(), str.size());
 			current_line_weight = str.size();
@@ -70,7 +70,7 @@ size_t calculate_north_weight(const std::vector<std::string>& matrix) {
 
 int second_part_2023_14() {
 	std::vector<std::string> matrix;
-	std::for_each(std::istream_iterator<std::string>(std::cin), std::istream_iterator<std::string>(), [&matrix](std::string str) mutable {
+	std::for_each(std::istream_iterator<std::string>(INPUT_SOURCE), std::istream_iterator<std::string>(), [&matrix](std::string str) mutable {
 		matrix.push_back(str);
 		});
 
