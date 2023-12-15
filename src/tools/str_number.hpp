@@ -7,6 +7,21 @@ template<typename T = long long>
 class str_number
 {
 public:
+    str_number() = default;
+
+    str_number(std::string_view str) {
+        for (char c : str) {
+            *this += c;
+        }
+    }
+
+    str_number& operator=(std::string_view str) {
+        for (char c : str) {
+            *this += c;
+        }
+        return *this;
+    }
+
 	void operator+=(char c)
 	{
 		is_ready = true;

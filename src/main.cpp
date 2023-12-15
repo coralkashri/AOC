@@ -6,7 +6,7 @@
 #include <execution>
 
 #define YEAR 2023
-#define DAY 14
+#define DAY 15
 //#define PART first
 #define PART second
 #define USE_TEST_CASE false
@@ -32,6 +32,11 @@
 int main() {
     id_t pid = getpid();
     int ret = setpriority(PRIO_PROCESS, pid, NZERO - 1);
+
+    if (!INPUT_SOURCE.is_open()) {
+        std::cout << "Can't open file: " INPUT_SOURCE_FILE_NAME;
+        return 1;
+    }
 
     auto start_time = std::chrono::high_resolution_clock::now();
     CALL_DESIRED_FUNCTION(PART, YEAR, DAY);
