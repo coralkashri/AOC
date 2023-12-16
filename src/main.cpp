@@ -5,10 +5,10 @@
 #include <chrono>
 #include <execution>
 
-#define YEAR 2020
-#define DAY 20
-#define PART first
-//#define PART second
+#define YEAR 2023
+#define DAY 16
+//#define PART first
+#define PART second
 #define USE_TEST_CASE false
 #define TEST_RUN true
 
