@@ -5,8 +5,8 @@
 #include <chrono>
 #include <execution>
 
-#define YEAR 2020
-#define DAY 21
+#define YEAR 2023
+#define DAY 17
 //#define PART first
 #define PART second
 #define USE_TEST_CASE false
@@ -31,7 +31,7 @@
 
 int main() {
     id_t pid = getpid();
-    int ret = setpriority(PRIO_PROCESS, pid, NZERO - 1);
+    //int ret = setpriority(PRIO_PROCESS, pid, NZERO - 1);
 
     if (!INPUT_SOURCE.is_open()) {
         std::cout << "Can't open file: " INPUT_SOURCE_FILE_NAME;
