@@ -6,6 +6,11 @@ namespace aoc_tools {
     template<typename T>
     class matrix {
     public:
+        void set_width_and_height(size_t new_width, size_t new_height, T default_value = T()) {
+            width = new_width;
+            data.resize(new_width * new_height, default_value);
+        }
+
         void insert_line(const std::vector<T> &str) {
             set_width_if_not_set(str.size());
             data.insert(data.end(), str.begin(), str.end());
@@ -42,11 +47,14 @@ namespace aoc_tools {
             return data.size() / width;
         }
 
-        void print() {
+        template <typename Conversion = T>
+        void print(T space_char = -1) {
             for (size_t y = 0; y < size_y(); ++y) {
                 for (size_t x = 0; x < size_x(); ++x) {
                     char c = (*this)[x, y];
-                    std::cout << (c == '.' ? ' ' : c);
+                    if (c == space_char)
+                        std::cout << " ";
+                    else std::cout << (Conversion)c;
                 }
                 std::cout << "\n";
             }

@@ -36,5 +36,6 @@
 #include "math.hpp"
 #include "aaa_to_zzz_string.hpp"
 #include "matrix.hpp"
+#include "binary_tools.hpp"
 
 #endif
