@@ -12,65 +12,6 @@
 #include "../tools/base_includes.h"
 
 namespace aoc_2023_day_10_tools {
-
-    template<typename T>
-    class matrix {
-    public:
-        void insert_line(const std::vector<T> &str) {
-            set_width_if_not_set(str.size());
-            data.insert(data.end(), str.begin(), str.end());
-        }
-
-        void insert_line(std::string_view str) {
-            set_width_if_not_set(str.size());
-            data.insert(data.end(), str.begin(), str.end());
-        }
-
-        void insert_line_front(const std::vector<T> &str) {
-            set_width_if_not_set(str.size());
-            data.insert(data.begin(), str.begin(), str.end());
-        }
-
-        void insert_line_front(std::string_view str) {
-            set_width_if_not_set(str.size());
-            data.insert(data.begin(), str.begin(), str.end());
-        }
-
-        [[nodiscard]] T operator[](size_t x, size_t y) const {
-            return data[y * width + x];
-        }
-
-        [[nodiscard]] T &operator[](size_t x, size_t y) {
-            return data[y * width + x];
-        }
-
-        [[nodiscard]] size_t size_x() const {
-            return width;
-        }
-
-        [[nodiscard]] size_t size_y() const {
-            return data.size() / width;
-        }
-
-        void print() {
-            for (size_t y = 0; y < size_y(); ++y) {
-                for (size_t x = 0; x < size_x(); ++x) {
-                    char c = (*this)[x, y];
-                    std::cout << (c == '.' ? ' ' : c);
-                }
-                std::cout << "\n";
-            }
-        }
-
-    private:
-        std::vector<T> data;
-        size_t width = 0;
-
-        void set_width_if_not_set(size_t new_width) {
-            if (!width) width = new_width;
-        }
-    };
-
     std::vector<std::pair<int8_t, int8_t>> relevant_neighbors(char shape) {
         switch (shape) {
             case 'F':
@@ -102,7 +43,7 @@ namespace aoc_2023_day_10_tools {
         }
     }
 
-    size_t search_near_tiles(const matrix<char> &map, matrix<size_t> &steps_count_map,
+    size_t search_near_tiles(const aoc_tools::matrix<char> &map, aoc_tools::matrix<size_t> &steps_count_map,
                              std::vector<std::pair<size_t, size_t>> &border_points, size_t current_steps, size_t x,
                              size_t y, size_t prev_x, size_t prev_y) {
         char c = map[x, y];
@@ -129,7 +70,7 @@ namespace aoc_2023_day_10_tools {
         return -1;
     }
 
-    void clear_non_loop_characters(matrix<char> &map, const std::vector<std::pair<size_t, size_t>> &loop_borders) {
+    void clear_non_loop_characters(aoc_tools::matrix<char> &map, const std::vector<std::pair<size_t, size_t>> &loop_borders) {
         std::vector<std::pair<size_t, size_t>> sorted_border_points(loop_borders.begin(), loop_borders.end());
         std::sort(sorted_border_points.begin(), sorted_border_points.end());
 
@@ -142,7 +83,7 @@ namespace aoc_2023_day_10_tools {
         }
     }
 
-    char detect_s_shape(matrix<char> &map, const std::vector<std::pair<size_t, size_t>> &border_points) {
+    char detect_s_shape(aoc_tools::matrix<char> &map, const std::vector<std::pair<size_t, size_t>> &border_points) {
         auto one_side = *border_points.begin();
         auto second_side = *std::next(border_points.rbegin(), 1);
         auto s_point = *border_points.rbegin();
@@ -171,7 +112,7 @@ namespace aoc_2023_day_10_tools {
         }
     }
 
-    size_t count_dots_within_cycle(matrix<char> &map, const std::vector<std::pair<size_t, size_t>> &border_points) {
+    size_t count_dots_within_cycle(aoc_tools::matrix<char> &map, const std::vector<std::pair<size_t, size_t>> &border_points) {
         size_t count = 0;
         bool is_within = false;
 
@@ -197,7 +138,7 @@ namespace aoc_2023_day_10_tools {
         return count;
     }
 
-    void parse_input(matrix<char> &map, matrix<size_t> &steps_count_map, size_t &start_x, size_t &start_y) {
+    void parse_input(aoc_tools::matrix<char> &map, aoc_tools::matrix<size_t> &steps_count_map, size_t &start_x, size_t &start_y) {
         std::vector<size_t> reset_steps;
         std::vector<char> empty_line;
         start_x = -1;
@@ -232,31 +173,31 @@ namespace aoc_2023_day_10_tools {
 }
 
 int first_part_2023_10() {
-    aoc_2023_day_10_tools::matrix<char> map;
-    aoc_2023_day_10_tools::matrix<size_t> steps_count_map;
+    aoc_tools::matrix<char> map;
+    aoc_tools::matrix<size_t> steps_count_map;
     std::vector<std::pair<size_t, size_t>> border_points;
     size_t start_x, start_y;
 
-    parse_input(map, steps_count_map, start_x, start_y);
+    aoc_2023_day_10_tools::parse_input(map, steps_count_map, start_x, start_y);
 
-    std::cout << search_near_tiles(map, steps_count_map, border_points, 0, start_x, start_y, 0, 0) << std::endl;
+    std::cout << aoc_2023_day_10_tools::search_near_tiles(map, steps_count_map, border_points, 0, start_x, start_y, 0, 0) << std::endl;
 
     return EXIT_SUCCESS;
 }
 
 int second_part_2023_10() {
-    aoc_2023_day_10_tools::matrix<char> map;
-    aoc_2023_day_10_tools::matrix<size_t> steps_count_map;
+    aoc_tools::matrix<char> map;
+    aoc_tools::matrix<size_t> steps_count_map;
     std::vector<std::pair<size_t, size_t>> border_points;
     size_t start_x, start_y;
 
-    parse_input(map, steps_count_map, start_x, start_y);
+    aoc_2023_day_10_tools::parse_input(map, steps_count_map, start_x, start_y);
 
-    search_near_tiles(map, steps_count_map, border_points, 0, start_x, start_y, 0, 0);
+    aoc_2023_day_10_tools::search_near_tiles(map, steps_count_map, border_points, 0, start_x, start_y, 0, 0);
 
-    clear_non_loop_characters(map, border_points);
+    aoc_2023_day_10_tools::clear_non_loop_characters(map, border_points);
 
-    std::cout << count_dots_within_cycle(map, border_points) << std::endl;
+    std::cout << aoc_2023_day_10_tools::count_dots_within_cycle(map, border_points) << std::endl;
 
     return EXIT_SUCCESS;
 }
