@@ -5,8 +5,8 @@
 #include <chrono>
 #include <execution>
 
-#define YEAR 2020
-#define DAY 22
+#define YEAR 2023
+#define DAY 19
 //#define PART first
 #define PART second
 #define USE_TEST_CASE false
