@@ -43,14 +43,12 @@ public:
 
     virtual void register_input_source(const std::string& source_name) {}
 
-    virtual std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse(size_t& high_pulses_counter, size_t& low_pulses_counter) {
-        return generate_pulse_impl(high_pulses_counter, low_pulses_counter, Low);
+    virtual std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse() {
+        return generate_pulse_impl(Low);
     }
 
 protected:
-    std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse_impl(size_t& high_pulses_counter, size_t& low_pulses_counter, pulse_types t) {
-        low_pulses_counter += destinations.size() * (t == Low);
-        high_pulses_counter += destinations.size() * (t == High);
+    std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse_impl(pulse_types t) {
         for (auto &c : destinations) {
             if (c) c->register_pulse(name, t);
         }
@@ -74,13 +72,13 @@ public:
         if (t == Low) last_received_pulse_types.push_back(t);
     }
 
-    std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse(size_t& high_pulses_counter, size_t& low_pulses_counter) override {
+    std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse() override {
         std::pair<std::vector<std::shared_ptr<module>>, pulse_types> res;
 
         for (auto p : last_received_pulse_types) {
             is_on = !is_on;
 
-            res = generate_pulse_impl(high_pulses_counter, low_pulses_counter, is_on ? High : Low);
+            res = generate_pulse_impl(is_on ? High : Low);
         }
         last_received_pulse_types.clear();
         return res;
@@ -107,7 +105,7 @@ public:
         previous_pulses[source_name] = Low;
     }
 
-    std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse(size_t& high_pulses_counter, size_t& low_pulses_counter) override {
+    std::pair<std::vector<std::shared_ptr<module>>, pulse_types> generate_pulse() override {
         bool is_all_high = true;
         for (auto& p : previous_pulses) {
             if (p.second == Low) {
@@ -116,7 +114,7 @@ public:
             }
         }
 
-        return generate_pulse_impl(high_pulses_counter, low_pulses_counter, is_all_high ? Low : High);
+        return generate_pulse_impl(is_all_high ? Low : High);
     }
 
 private:
@@ -190,7 +188,10 @@ int first_part_2023_20() {
 
             if (!src) continue;
 
-            auto res = src->generate_pulse(high_pulses, low_pulses);
+            auto res = src->generate_pulse();
+            low_pulses += res.first.size() * (res.second == Low);
+            high_pulses += res.first.size() * (res.second == High);
+
             for (auto &c: res.first) {
                 next_modules_to_activate.push(c);
             }
@@ -202,9 +203,8 @@ int first_part_2023_20() {
     return EXIT_SUCCESS;
 }
 
-size_t find_loop(const auto& all_modules, std::string_view module_name) {
+size_t count_button_clicks_for_high(const auto& all_modules, std::string_view module_name) {
     std::queue<std::shared_ptr<module>> next_modules_to_activate;
-    size_t low_pulses = 0, high_pulses = 0;
     size_t i;
     for (i = 0; i < -1;) {
         ++i;
@@ -216,7 +216,7 @@ size_t find_loop(const auto& all_modules, std::string_view module_name) {
 
             if (!src) continue;
 
-            auto res = src->generate_pulse(high_pulses, low_pulses);
+            auto res = src->generate_pulse();
             for (auto &c: res.first) {
                 next_modules_to_activate.push(c);
             }
@@ -226,7 +226,7 @@ size_t find_loop(const auto& all_modules, std::string_view module_name) {
             }
         }
     }
-    return 0;
+    return -1;
 }
 
 void reset_all_modules(auto& modules) {
@@ -241,13 +241,13 @@ int second_part_2023_20() {
     all_modules = parse_modules();
     activate_modules(all_modules);
 
-    size_t xj = find_loop(all_modules, "xj");
+    size_t xj = count_button_clicks_for_high(all_modules, "xj");
     reset_all_modules(all_modules);
-    size_t qs = find_loop(all_modules, "qs");
+    size_t qs = count_button_clicks_for_high(all_modules, "qs");
     reset_all_modules(all_modules);
-    size_t kz = find_loop(all_modules, "kz");
+    size_t kz = count_button_clicks_for_high(all_modules, "kz");
     reset_all_modules(all_modules);
-    size_t km = find_loop(all_modules, "km");
+    size_t km = count_button_clicks_for_high(all_modules, "km");
 
     std::cout << lcm({xj, qs, kz, km}) << std::endl;
 
