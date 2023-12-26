@@ -6,10 +6,10 @@
 #include <execution>
 
 #define YEAR 2023
-#define DAY 22
+#define DAY 23
 //#define PART first
 #define PART second
-#define USE_TEST_CASE false
+#define USE_TEST_CASE true
 #define TEST_RUN true
 
 #if TEST_RUN
