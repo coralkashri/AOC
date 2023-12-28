@@ -9,7 +9,7 @@
 #define DAY 23
 //#define PART first
 #define PART second
-#define USE_TEST_CASE true
+#define USE_TEST_CASE false
 #define TEST_RUN true
 
 #if TEST_RUN
