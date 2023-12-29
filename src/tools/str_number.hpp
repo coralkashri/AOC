@@ -74,7 +74,9 @@ public:
 		if (c == Sep)
 		{
 			is_prev_number_ready = true;
-            data.back() *= is_negative ? -1 : 1;
+            if (!data.empty()) {
+                data.back() *= is_negative ? -1 : 1;
+            }
             is_negative = false;
 			return;
 		}
