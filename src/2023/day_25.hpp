@@ -166,23 +166,26 @@ int first_part_2023_25() {
         connection_strength c = connections.top();
         connections.pop();
 
+        node* side1_node = &nodes[c.side1];
+        node* side2_node = &nodes[c.side2];
+
         //possible_combinations.push_back(c); // See comment below
 
         std::cout << c.side1 << " " << c.side2 << " " << c.strength << std::endl;
 
         sides.emplace_back(c.side1, c.side2);
 
-        modified_connections.insert(&nodes[c.side1]);
-        modified_connections.insert(&nodes[c.side2]);
+        modified_connections.insert(side1_node);
+        modified_connections.insert(side2_node);
 
-        nodes[c.side1].temp_connections = nodes[c.side1].connections;
-        nodes[c.side2].temp_connections = nodes[c.side2].connections;
+        side1_node->temp_connections = side1_node->connections;
+        side2_node->temp_connections = side2_node->connections;
 
-        std::erase_if(nodes[c.side1].temp_connections, [c2 = &nodes[c.side2]](const node *c1) {
+        std::erase_if(side1_node->temp_connections, [c2 = side2_node](const node *c1) {
             return c1 == c2;
         });
 
-        std::erase_if(nodes[c.side2].temp_connections, [c1 = &nodes[c.side1]](const node *c2) {
+        std::erase_if(side2_node->temp_connections, [c1 = side1_node](const node *c2) {
             return c2 == c1;
         });
     }
