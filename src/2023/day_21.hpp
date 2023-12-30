@@ -12,130 +12,112 @@
 #include "../input_source.hpp"
 #include "../tools/base_includes.h"
 
-std::vector<point_xd<2>> mark_near_locations(auto& points, const point_xd<2>& current_location) {
-    static std::vector<point_xd<2>> relative_locations = {
-            {0, 1},
-            {0, -1},
-            {1, 0},
-            {-1, 0},
-    };
+/*
+ * Thanks to https://github.com/villuna/aoc23/wiki/A-Geometric-solution-to-advent-of-code-2023,-day-21 for the math.
+ * And for https://www.reddit.com/r/adventofcode/comments/18nol3m/comment/ked9am2/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button for the edge case.
+ */
 
-    std::vector<point_xd<2>> new_locations;
-    new_locations.reserve(4);
+struct state {
+    size_t steps = 0;
+    point_xd<2> location{};
+};
 
-    points[current_location] = false;
+std::vector<point_xd<2>> get_neighbors(const std::unordered_set<point_xd<2>> &points, const point_xd<2>& location) {
+    std::vector<point_xd<2>> offsets = {{0,  1},
+                                        {0,  -1},
+                                        {1,  0},
+                                        {-1, 0}};
 
-    for (const auto& rel : relative_locations) {
-        auto loc = current_location + rel;
-        if (points.contains(loc)) {
-            points[loc] = true;
-            new_locations.push_back(loc);
+    std::vector<point_xd<2>> neighbors;
+
+    for (auto& offset : offsets) {
+        if (points.contains(location + offset)) neighbors.push_back(location + offset);
+    }
+
+    return neighbors;
+}
+
+std::array<size_t, 2> bfs(const std::unordered_set<point_xd<2>> &points, point_xd<2> start, size_t max_steps = -1, size_t min_steps = 0) {
+    std::queue<state> travelers;
+    std::set<point_xd<2>> visited;
+    std::array<size_t, 2> parity_counter{0, 0}; // 0 = even, 1 = odd
+
+    travelers.push({0, start});
+
+    while (!travelers.empty()) {
+        auto [steps, location] = travelers.front();
+        travelers.pop();
+
+        if (visited.contains(location)) continue;
+        visited.insert(location);
+
+        if (steps >= min_steps) ++parity_counter[steps % 2];
+
+        if (steps + 1 > max_steps) continue;
+
+        for (const auto& n : get_neighbors(points, location)) {
+            travelers.push({steps + 1, n});
         }
     }
 
-    return new_locations;
-}
-
-std::vector<point_xd<2>> mark_near_locations_infinite_map(auto& points, size_t width, size_t height, const point_xd<2>& current_location) {
-    static std::vector<point_xd<2>> relative_locations = {
-            {0, 1},
-            {0, -1},
-            {1, 0},
-            {-1, 0},
-    };
-
-    std::vector<point_xd<2>> new_locations;
-    new_locations.reserve(4);
-
-    points[current_location] = false;
-
-    for (const auto& rel : relative_locations) {
-        auto loc = current_location + rel;
-        if (points.contains({std::abs(loc[0]) % (int64_t)height, std::abs(loc[1]) % (int64_t)width})) {
-            points[loc] = true;
-            new_locations.push_back(loc);
-        }
-    }
-
-    return new_locations;
-}
-
-void perform_step(auto& points, auto& current_locations) {
-    std::remove_reference_t<decltype(current_locations)> new_current_locations;
-
-    for (const auto& loc : current_locations) {
-        auto res = mark_near_locations(points, loc);
-        new_current_locations.insert(res.begin(),  res.end());
-    }
-
-    current_locations.swap(new_current_locations);
-}
-
-void perform_step_infinite_map(auto& points, size_t width, size_t height, auto& current_locations) {
-    std::remove_reference_t<decltype(current_locations)> new_current_locations;
-
-    for (const auto& loc : current_locations) {
-        auto res = mark_near_locations_infinite_map(points, width, height, loc);
-        new_current_locations.insert(res.begin(),  res.end());
-    }
-
-    current_locations.swap(new_current_locations);
+    return parity_counter;
 }
 
 int first_part_2023_21() {
-    std::unordered_map<point_xd<2>, bool> points;
-    std::set<point_xd<2>> current_locations;
+    std::unordered_set<point_xd<2>> points;
+    point_xd<2> current_location{};
     std::for_each(std::istream_iterator<std::string>(INPUT_SOURCE),
                   std::istream_iterator<std::string>(),
-                          [&points, &current_locations, y = 0ll] (std::string str) mutable {
+                          [&points, &current_location, y = 0ll] (std::string str) mutable {
         for (int64_t x = 0; x < ssize(str); ++x) {
             if (str[x] == '.') {
-                points[{y, x}] = false;
+                points.insert({y, x});
             } else if (str[x] == 'S') {
-                points[{y, x}] = true;
-                current_locations.insert({y, x});
+                points.insert({y, x});
+                current_location = {y, x};
             }
         }
         ++y;
     });
 
-    for (size_t i = 0; i < 64; ++i) {
-        perform_step(points, current_locations);
-    }
-
-    std::cout << current_locations.size() << std::endl;
+    std::cout << bfs(points, current_location, 64)[64 % 2] << std::endl;
 
     return EXIT_SUCCESS;
 }
 
 int second_part_2023_21() {
-    /* TODO:
-     *  This section is incomplete due to math related solution - will be solved in the future.
-     */
-    /*
-    std::unordered_map<point_xd<2>, bool> points;
-    std::set<point_xd<2>> current_locations;
-    size_t width, height;
+    std::unordered_set<point_xd<2>> points;
+    point_xd<2> current_location{};
+    size_t dim;
     std::for_each(std::istream_iterator<std::string>(INPUT_SOURCE),
                   std::istream_iterator<std::string>(),
-                  [&points, &width, &height, &current_locations, y = 0ll] (std::string str) mutable {
-                      width = str.size();
+                  [&points, &current_location, &dim, y = 0ll] (std::string str) mutable {
+                      dim = str.size();
                       for (int64_t x = 0; x < ssize(str); ++x) {
                           if (str[x] == '.') {
-                              points[{y, x}] = false;
+                              points.insert({y, x});
                           } else if (str[x] == 'S') {
-                              points[{y, x}] = true;
-                              current_locations.insert({y, x});
+                              points.insert({y, x});
+                              current_location = {y, x};
                           }
                       }
-                      height = ++y;
+                      ++y;
                   });
 
-    for (size_t i = 0; i < 26501365; ++i) {
-        perform_step_infinite_map(points, width, height, current_locations);
+    size_t n = (26501365 - dim / 2) / dim;
+
+    if (n != 202300) {
+        std::cout << "Error!\n";
+        return 1;
     }
 
-    std::cout << current_locations.size() << std::endl;*/
+    auto full_parities = bfs(points, current_location, -1, 0);
+    auto corner_parities = bfs(points, current_location, -1, 66);
+
+    size_t n_2 = n * n;
+    size_t n_1_2 = (n + 1) * (n + 1);
+
+    std::cout << n_1_2 * full_parities[1] + n_2 * full_parities[0] - (n + 1) * corner_parities[1] + n * corner_parities[0] - n << std::endl;
 
     return EXIT_SUCCESS;
 }
