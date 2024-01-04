@@ -40,5 +40,6 @@
 #include "matrix.hpp"
 #include "binary_tools.hpp"
 #include "range.hpp"
+#include "linear_algebra/all.hpp"
 
 #endif

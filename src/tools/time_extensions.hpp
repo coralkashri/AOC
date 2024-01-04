@@ -16,7 +16,7 @@ void pretty_time_print(auto start_time, auto stop_time) {
               << s.count() << " seconds, "
               << milli.count() << " milliseconds, "
               << micro.count() << " microseconds, "
-              << micro.count() << " nanoseconds\n";
+              << nano.count() << " nanoseconds\n";
 }
 
 #endif
