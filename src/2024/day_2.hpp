@@ -1,5 +1,5 @@
-#ifndef ADVENTOFCODE2024_DAY_1_HPP
-#define ADVENTOFCODE2024_DAY_1_HPP
+#ifndef ADVENTOFCODE2024_DAY_2_HPP
+#define ADVENTOFCODE2024_DAY_2_HPP
 
 #include <iostream>
 #include <algorithm>
@@ -64,4 +64,4 @@ int second_part_2024_2() {
     return EXIT_SUCCESS;
 }
 
-#endif //ADVENTOFCODE2024_DAY_1_HPP
+#endif
