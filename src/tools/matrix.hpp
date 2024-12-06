@@ -1,6 +1,8 @@
 #ifndef ADVENTOFCODE2021_MATRIX_HPP
 #define ADVENTOFCODE2021_MATRIX_HPP
 
+#include "point.hpp"
+
 namespace aoc_tools {
 
     template<typename T>
@@ -31,12 +33,26 @@ namespace aoc_tools {
             data.insert(data.begin(), str.begin(), str.end());
         }
 
+        void insert_padding_lines(T padding) {
+            insert_line(std::vector<T>(width, padding));
+            insert_line_front(std::vector<T>(width, padding));
+        }
+
         [[nodiscard]] T operator[](size_t x, size_t y) const {
             return data[y * width + x];
         }
 
         [[nodiscard]] T &operator[](size_t x, size_t y) {
             return data[y * width + x];
+        }
+
+
+        [[nodiscard]] T operator[](point_xd<2> location) const {
+            return data[location[1] * width + location[0]];
+        }
+
+        [[nodiscard]] T &operator[](point_xd<2> location) {
+            return data[location[1] * width + location[0]];
         }
 
         [[nodiscard]] size_t size_x() const {

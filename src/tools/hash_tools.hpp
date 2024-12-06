@@ -1,6 +1,8 @@
 #ifndef ADVENTOFCODE2021_HASH_TOOLS_HPP
 #define ADVENTOFCODE2021_HASH_TOOLS_HPP
 
+#include <queue>
+
 template <class T>
 inline void hash_combine(std::size_t & seed, const T & v)
 {
