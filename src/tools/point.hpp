@@ -33,6 +33,16 @@ struct point_xd {
         return res;
     }
 
+    auto operator-=(const point_xd& ref) {
+        std::transform(places.begin(), places.end(), ref.places.begin(), places.begin(), std::minus<>{});
+    }
+
+    auto operator-(const point_xd& ref) const {
+        point_xd res;
+        std::transform(places.begin(), places.end(), ref.places.begin(), res.places.begin(), std::minus<>{});
+        return res;
+    }
+
     [[nodiscard]] size_t simple_distance(const point_xd other) const {
         size_t distance = 0;
         for (size_t dim = 0; dim < Dims; ++dim) {

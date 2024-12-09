@@ -76,6 +76,14 @@ namespace aoc_tools {
             }
         }
 
+        bool is_border_location(point_xd<2> location) const {
+            return location[0] == size_x() - 1 || location[1] == size_y() - 1 || location[0] == 0 || location[1] == 0;
+        }
+
+        const auto& get_data() const {
+            return data;
+        }
+
     private:
         std::vector<T> data;
         size_t width = 0;
