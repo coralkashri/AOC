@@ -6,7 +6,7 @@
 #include <execution>
 
 #define YEAR 2024
-#define DAY 7
+#define DAY 9
 //#define PART first
 #define PART second
 #define USE_TEST_CASE false
