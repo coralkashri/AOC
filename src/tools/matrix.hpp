@@ -18,17 +18,7 @@ namespace aoc_tools {
             data.insert(data.end(), str.begin(), str.end());
         }
 
-        void insert_line(std::string_view str) {
-            set_width_if_not_set(str.size());
-            data.insert(data.end(), str.begin(), str.end());
-        }
-
         void insert_line_front(const std::vector<T> &str) {
-            set_width_if_not_set(str.size());
-            data.insert(data.begin(), str.begin(), str.end());
-        }
-
-        void insert_line_front(std::string_view str) {
             set_width_if_not_set(str.size());
             data.insert(data.begin(), str.begin(), str.end());
         }
@@ -84,12 +74,29 @@ namespace aoc_tools {
             return data;
         }
 
-    private:
+    protected:
         std::vector<T> data;
         size_t width = 0;
 
         void set_width_if_not_set(size_t new_width) {
             if (!width) width = new_width;
+        }
+    };
+
+    template<>
+    class matrix<char> : public matrix<int> {
+    public:
+        using matrix<int>::insert_line;
+        using matrix<int>::insert_line_front;
+
+        void insert_line(std::string_view str) {
+            set_width_if_not_set(str.size());
+            data.insert(data.end(), str.begin(), str.end());
+        }
+
+        void insert_line_front(std::string_view str) {
+            set_width_if_not_set(str.size());
+            data.insert(data.begin(), str.begin(), str.end());
         }
     };
 }
