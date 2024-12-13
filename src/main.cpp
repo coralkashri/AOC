@@ -7,8 +7,8 @@
 
 #define YEAR 2024
 #define DAY 11
-#define PART first
-//#define PART second
+//#define PART first
+#define PART second
 #define USE_TEST_CASE false
 #define TEST_RUN true
 

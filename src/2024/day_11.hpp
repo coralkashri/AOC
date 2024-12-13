@@ -82,7 +82,7 @@ public:
     }
 
 private:
-    std::map<int64_t, research_data> conclusions;
+    std::unordered_map<int64_t, research_data> conclusions;
 
     [[nodiscard]] int64_t digits_count(int64_t number) const {
         int64_t counter = 0;
