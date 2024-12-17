@@ -1,5 +1,5 @@
-#ifndef ADVENTOFCODE2024_DAY_10_HPP
-#define ADVENTOFCODE2024_DAY_10_HPP
+#ifndef ADVENTOFCODE2024_DAY_11_HPP
+#define ADVENTOFCODE2024_DAY_11_HPP
 
 #include <iostream>
 #include <algorithm>
