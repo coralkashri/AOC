@@ -65,7 +65,7 @@ public:
 
 private:
     aoc_tools::matrix<char> data;
-    point_xd<2> location;
+    point_xd<2> location{-1, -1};
 
     void move_right() {
         long long steps = 1;
@@ -183,6 +183,11 @@ public:
         data.insert_line(new_str);
     }
 
+    enum direction {
+        above = -1,
+        below = 1
+    };
+
     void apply_action(char action) {
         switch (action) {
             case '>':
@@ -192,10 +197,10 @@ public:
                 move_left();
                 break;
             case '^':
-                move_up();
+                move_vertically<above>();
                 break;
             case 'v':
-                move_down();
+                move_vertically<below>();
                 break;
             default:
                 break;
@@ -218,7 +223,7 @@ public:
 
 private:
     aoc_tools::matrix<char> data;
-    point_xd<2> location;
+    point_xd<2> location{-1, -1};
 
     void move_right() {
         long long steps = 1;
@@ -262,68 +267,71 @@ private:
         --location[0];
     }
 
-    std::pair<point_xd<2>, point_xd<2>> get_block_above(point_xd<2> location) {
-        if (data[location[0], location[1] - 1] == '[') {
-            return {{location[0], location[1] - 1}, {location[0] + 1, location[1] - 1}};
+    template <direction d>
+    std::pair<point_xd<2>, point_xd<2>> get_block(point_xd<2> position) {
+        if (data[position[0], position[1] + d] == '[') {
+            return {{position[0], position[1] + d}, {position[0] + 1, position[1] + d}};
         }
-        if (data[location[0], location[1] - 1] == ']') {
-            return {{location[0] - 1, location[1] - 1}, {location[0], location[1] - 1}};
+        if (data[position[0], position[1] + d] == ']') {
+            return {{position[0] - 1, position[1] + d}, {position[0], position[1] + d}};
         }
         return {};
     }
 
-    bool can_move_up(std::pair<point_xd<2>, point_xd<2>> block) {
+    template <direction d>
+    bool can_move_block(std::pair<point_xd<2>, point_xd<2>> block) {
         auto [block_start, block_stop] = block;
-        if (data[block_start[0], block_start[1] - 1] == '#' || data[block_stop[0], block_stop[1] - 1] == '#') return false;
-        if (data[block_start[0], block_start[1] - 1] == '.' && data[block_stop[0], block_stop[1] - 1] == '.') return true;
+        if (data[block_start[0], block_start[1] + d] == '#' || data[block_stop[0], block_stop[1] + d] == '#') return false;
+        if (data[block_start[0], block_start[1] + d] == '.' && data[block_stop[0], block_stop[1] + d] == '.') return true;
 
         bool can_move = true;
 
-        if (data[block_start[0], block_start[1] - 1] != '.') {
-            can_move = can_move_up(get_block_above(block_start));
+        if (data[block_start[0], block_start[1] + d] != '.') {
+            can_move = can_move_block<d>(get_block<d>(block_start));
         }
 
-        if (data[block_start[0], block_start[1] - 1] != '[') { // Which means '.' or ']' and therefore this one can be [
-            if (data[block_stop[0], block_stop[1] - 1] != '.') {
-                can_move = can_move && can_move_up(get_block_above(block_stop));
+        if (data[block_start[0], block_start[1] + d] != '[') { // Which means '.' or ']' and therefore this one can be [
+            if (data[block_stop[0], block_stop[1] + d] != '.') {
+                can_move = can_move && can_move_block<d>(get_block<d>(block_stop));
             }
         }
 
         return can_move;
     }
 
-    void move_up_block(std::pair<point_xd<2>, point_xd<2>> block) {
+    template <direction d>
+    void move_block(std::pair<point_xd<2>, point_xd<2>> block) {
         auto [block_start, block_stop] = block;
 
-        if (data[block_start[0], block_start[1] - 1] == '.' && data[block_stop[0], block_stop[1] - 1] == '.') {
-            data[block_start[0], block_start[1] - 1] = '[';
-            data[block_stop[0], block_stop[1] - 1] = ']';
+        if (data[block_start[0], block_start[1] + d] == '.' && data[block_stop[0], block_stop[1] + d] == '.') {
+            data[block_start[0], block_start[1] + d] = '[';
+            data[block_stop[0], block_stop[1] + d] = ']';
             data[block_start] = '.';
             data[block_stop] = '.';
             return;
         }
 
-        if (data[block_start[0], block_start[1] - 1] != '.') {
-            move_up_block(get_block_above(block_start));
+        if (data[block_start[0], block_start[1] + d] != '.') {
+            move_block<d>(get_block<d>(block_start));
         }
 
-        if (data[block_start[0], block_start[1] - 1] != '[') { // Which means '.' or ']' and therefore this one can be [
-            if (data[block_stop[0], block_stop[1] - 1] != '.') {
-                move_up_block(get_block_above(block_stop));
+        if (data[block_start[0], block_start[1] + d] != '[') { // Which means '.' or ']' and therefore this one can be [
+            if (data[block_stop[0], block_stop[1] + d] != '.') {
+                move_block<d>(get_block<d>(block_stop));
             }
         }
 
-        data[block_start[0], block_start[1] - 1] = '[';
-        data[block_stop[0], block_stop[1] - 1] = ']';
+        data[block_start[0], block_start[1] + d] = '[';
+        data[block_stop[0], block_stop[1] + d] = ']';
         data[block_start] = '.';
         data[block_stop] = '.';
     }
 
-    void move_up() {
-        long long steps = -1;
-        auto sign = data[location[0], location[1] + steps];
+    template <direction d>
+    void move_vertically() {
+        auto sign = data[location[0], location[1] + d];
         if (sign != '.' && sign != '#') {
-            if (!can_move_up(get_block_above(location))) {
+            if (!can_move_block<d>(get_block<d>(location))) {
                 return;
             }
         }
@@ -331,91 +339,11 @@ private:
         if (sign == '#') return;
 
         if (sign != '.') {
-            move_up_block(get_block_above(location));
+            move_block<d>(get_block<d>(location));
         }
 
-        std::swap(data[location], data[location[0], location[1] - 1]);
-        --location[1];
-    }
-
-    enum direction {
-        above = -1,
-        blow = 1
-    };
-
-    std::pair<point_xd<2>, point_xd<2>> get_block_below(point_xd<2> location) {
-        if (data[location[0], location[1] + 1] == '[') {
-            return {{location[0], location[1] + 1}, {location[0] + 1, location[1] + 1}};
-        }
-        if (data[location[0], location[1] + 1] == ']') {
-            return {{location[0] - 1, location[1] + 1}, {location[0], location[1] + 1}};
-        }
-        return {};
-    }
-
-    bool can_move_down(std::pair<point_xd<2>, point_xd<2>> block) {
-        const auto& [block_start, block_stop] = block;
-        if (data[block_start[0], block_start[1] + 1] == '#' || data[block_stop[0], block_stop[1] + 1] == '#') return false;
-        if (data[block_start[0], block_start[1] + 1] == '.' && data[block_stop[0], block_stop[1] + 1] == '.') return true;
-
-        bool can_move = true;
-
-        if (data[block_start[0], block_start[1] + 1] != '.') {
-            can_move = can_move_down(get_block_below(block_start));
-        }
-
-        if (data[block_start[0], block_start[1] + 1] != '[') { // Which means '.' or ']' and therefore this one can be [
-            if (data[block_stop[0], block_stop[1] + 1] != '.') {
-                can_move = can_move && can_move_down(get_block_below(block_stop));
-            }
-        }
-
-        return can_move;
-    }
-
-    void move_down_block(std::pair<point_xd<2>, point_xd<2>> block) {
-        const auto& [block_start, block_stop] = block;
-
-        if (data[block_start[0], block_start[1] + 1] == '.' && data[block_stop[0], block_stop[1] + 1] == '.') {
-            data[block_start[0], block_start[1] + 1] = '[';
-            data[block_stop[0], block_stop[1] + 1] = ']';
-            data[block_start] = '.';
-            data[block_stop] = '.';
-            return;
-        }
-
-        if (data[block_start[0], block_start[1] + 1] != '.') {
-            move_down_block(get_block_below(block_start));
-        }
-
-        if (data[block_start[0], block_start[1] + 1] != '[') { // Which means '.' or ']' and therefore this one can be [
-            if (data[block_stop[0], block_stop[1] + 1] != '.') {
-                move_down_block(get_block_below(block_stop));
-            }
-        }
-
-        data[block_start[0], block_start[1] + 1] = '[';
-        data[block_stop[0], block_stop[1] + 1] = ']';
-        data[block_start] = '.';
-        data[block_stop] = '.';
-    }
-
-    void move_down() {
-        auto sign = data[location[0], location[1] + 1];
-        if (sign != '.' && sign != '#') {
-            if (!can_move_down(get_block_below(location))) {
-                return;
-            }
-        }
-
-        if (sign == '#') return;
-
-        if (sign != '.') {
-            move_down_block(get_block_below(location));
-        }
-
-        std::swap(data[location], data[location[0], location[1] + 1]);
-        ++location[1];
+        std::swap(data[location], data[location[0], location[1] + d]);
+        location[1] += d;
     }
 };
 
