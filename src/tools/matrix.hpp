@@ -66,6 +66,16 @@ namespace aoc_tools {
             }
         }
 
+        template<typename FuncT>
+        void for_each(FuncT&& func) {
+            for (size_t y = 0; y < size_y(); ++y) {
+                for (size_t x = 0; x < size_x(); ++x) {
+                    auto c = (*this)[x, y];
+                    func(c, x, y);
+                }
+            }
+        }
+
         bool is_border_location(point_xd<2> location) const {
             return location[0] == size_x() - 1 || location[1] == size_y() - 1 || location[0] == 0 || location[1] == 0;
         }
@@ -84,10 +94,10 @@ namespace aoc_tools {
     };
 
     template<>
-    class matrix<char> : public matrix<int> {
+    class matrix<char> : public matrix<uint8_t> {
     public:
-        using matrix<int>::insert_line;
-        using matrix<int>::insert_line_front;
+        using matrix<uint8_t>::insert_line;
+        using matrix<uint8_t>::insert_line_front;
 
         void insert_line(std::string_view str) {
             set_width_if_not_set(str.size());
