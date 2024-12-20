@@ -84,6 +84,66 @@ namespace point_tools {
         north_west,
     };
 
+    template <typename DirectionsT, bool UseBasicDirections, bool Circular = false>
+    class directions_iterator {
+    public:
+        directions_iterator() : value(0) {}
+
+        directions_iterator(DirectionsT start) : value(start) {
+            if constexpr (UseBasicDirections) {
+                if (value % 2 == 1) throw std::runtime_error("directions_iterator initialized with UseBasicDirections but got non basic initial direction value.");
+            }
+        }
+
+        DirectionsT operator*() { return static_cast<DirectionsT>(value); }
+
+        directions_iterator begin() { return directions_iterator<DirectionsT, UseBasicDirections>(static_cast<DirectionsT>(0)); }
+        directions_iterator end() { return directions_iterator<DirectionsT, UseBasicDirections>(static_cast<DirectionsT>(8)); }
+
+        bool operator==(const directions_iterator& ref) const {
+            return value == ref.value;
+        }
+
+        directions_iterator& operator++() {
+            if constexpr (Circular) {
+                value = (value + 1 + UseBasicDirections) % (north_west + 1);
+            } else {
+                value += 1 + UseBasicDirections;
+            }
+            return *this;
+        }
+
+        directions_iterator operator++(int) {
+            auto ret = *this;
+            if constexpr (Circular) {
+                value = (value + 1 + UseBasicDirections) % (north_west + 1);
+            } else {
+                value += 1 + UseBasicDirections;
+            }
+            return ret;
+        }
+
+        directions_iterator& operator--() {
+            --value;
+            if constexpr (Circular) {
+                if (value < 0) value += north_west + 1;
+            }
+            return *this;
+        }
+
+        directions_iterator operator--(int) {
+            auto ret = *this;
+            --value;
+            if constexpr (Circular) {
+                if (value < 0) value += north_west + 1;
+            }
+            return ret;
+        }
+
+    private:
+        std::underlying_type_t<direction_names_advanced> value;
+    };
+
     class directions {
     public:
         using data_t = std::vector<point_xd<2>>;
