@@ -1,6 +1,7 @@
 #ifndef ADVENTOFCODE2021_POINT_HPP
 #define ADVENTOFCODE2021_POINT_HPP
 
+#include <span>
 #include "hash_tools.hpp"
 
 template <size_t Dims>

@@ -1,6 +1,8 @@
 #ifndef ADVENTOFCODE2021_MATRIX_HPP
 #define ADVENTOFCODE2021_MATRIX_HPP
 
+#include <cstdint>
+#include <string_view>
 #include "point.hpp"
 
 namespace aoc_tools {
