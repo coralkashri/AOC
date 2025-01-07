@@ -208,7 +208,9 @@ namespace point_tools {
             return res;
         }
 
-        point_xd<2> get_direction(direction_names d) {
+        template <typename DirectionT>
+        requires std::is_same_v<DirectionT, direction_names> || std::is_same_v<DirectionT, direction_names_advanced>
+        point_xd<2> get_direction(DirectionT d) {
             return all_directions[d];
         }
 

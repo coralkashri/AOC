@@ -67,6 +67,16 @@ namespace aoc_tools {
         }
 
         template<typename FuncT>
+        void for_each(FuncT&& func) const {
+            for (size_t y = 0; y < size_y(); ++y) {
+                for (size_t x = 0; x < size_x(); ++x) {
+                    auto c = (*this)[x, y];
+                    func(c, x, y);
+                }
+            }
+        }
+
+        template<typename FuncT>
         void for_each(FuncT&& func) {
             for (size_t y = 0; y < size_y(); ++y) {
                 for (size_t x = 0; x < size_x(); ++x) {
